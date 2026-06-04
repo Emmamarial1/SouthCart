@@ -640,6 +640,13 @@ def admin_update_profile():
     flash('Profile updated', 'success')
     return redirect(url_for('admin_settings'))
 
+import os
+from flask import send_from_directory
+
+@app.route('/static/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('static/uploads', filename)
+
 # ---------- Static pages ----------
 @app.route('/about')
 def about():
