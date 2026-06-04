@@ -665,5 +665,11 @@ def delivery():
 def faq():
     return render_template('faq.html', cart_count=get_cart_count())
 
+# Serve uploaded images directly (bypass static mapping issues)
+@app.route('/static/uploads/<path:filename>')
+def serve_uploaded_file(filename):
+    from flask import send_from_directory
+    return send_from_directory('static/uploads', filename)
+
 if __name__ == '__main__':
     app.run(debug=True, port=8088)
