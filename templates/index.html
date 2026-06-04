@@ -2,15 +2,57 @@
 {% block title %}SouthCart - Borderless Shopping{% endblock %}
 {% block content %}
 
-<!-- Hero Carousel (8 slides) – unchanged -->
+<!-- Hero Carousel (8 slides) -->
 <div class="relative h-[55vh] min-h-[400px] overflow-hidden">
     <div id="hero-carousel" class="absolute inset-0 z-0">
+        <!-- Slide 1: Fashion -->
         <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="0">
             <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=800&fit=crop" alt="Fashion" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/40"></div>
             <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">FASHION</span></div>
         </div>
-        <!-- ... other 7 slides (same as before) ... -->
+        <!-- Slide 2: Electronics -->
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="1">
+            <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1920&h=800&fit=crop" alt="Electronics" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">ELECTRONICS</span></div>
+        </div>
+        <!-- Slide 3: Shoes -->
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="2">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1920&h=800&fit=crop" alt="Shoes" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">SHOES</span></div>
+        </div>
+        <!-- Slide 4: Bags -->
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="3">
+            <img src="https://images.unsplash.com/photo-1547949003-9792a18a2601?w=1920&h=800&fit=crop" alt="Bags" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">BAGS</span></div>
+        </div>
+        <!-- Slide 5: Accessories -->
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="4">
+            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1920&h=800&fit=crop" alt="Accessories" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">ACCESSORIES</span></div>
+        </div>
+        <!-- Slide 6: Watches -->
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="5">
+            <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=1920&h=800&fit=crop" alt="Watches" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">WATCHES</span></div>
+        </div>
+        <!-- Slide 7: Beauty -->
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="6">
+            <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&h=800&fit=crop" alt="Beauty" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">BEAUTY</span></div>
+        </div>
+        <!-- Slide 8: Phones -->
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="7">
+            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=1920&h=800&fit=crop" alt="Phones" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">PHONES</span></div>
+        </div>
     </div>
     <div class="absolute bottom-4 left-0 right-0 z-10 flex justify-center gap-2">
         {% for i in range(8) %}
@@ -26,10 +68,11 @@
         <a href="/shop" class="text-green-600 text-sm font-medium">View all →</a>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-        <!-- 8 category image items, unchanged -->
+        <!-- category items – you can keep your existing category icons/images here -->
     </div>
 </div>
 
+<!-- Featured Products Grid -->
 <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-7xl mx-auto">
     {% for product in products %}
     <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition card-hover">
@@ -51,6 +94,7 @@
     </div>
     {% endfor %}
 </div>
+
 <!-- Trust Strip -->
 <div class="bg-gray-50 py-4 border-t border-gray-200">
     <div class="container mx-auto px-4 text-center text-sm text-gray-500">
@@ -59,7 +103,7 @@
 </div>
 
 <script>
-    // Carousel logic (unchanged)
+    // Carousel logic
     let currentSlide = 0;
     const slides = document.querySelectorAll('.carousel-slide');
     const dots = document.querySelectorAll('.carousel-dot');
