@@ -40,12 +40,18 @@
             <tbody>
                 {% for p in products %}
                 <tr class="border-t">
-                    <td class="p-3"><img src="{{ p.image_url or 'https://placehold.co/50' }}" class="w-10 h-10 object-cover rounded"></td>
+                    <td class="p-3">
+                        <img src="{{ p.image_url or 'https://placehold.co/50' }}" class="w-10 h-10 object-cover rounded"
+                             onerror="this.src='https://placehold.co/50?text=No+Image'">
+                    </td>
                     <td class="p-3">{{ p.name }}</td>
                     <td class="p-3" data-price-ugx="{{ p.price_ugx }}">UGX {{ p.price_ugx }}</td>
                     <td class="p-3">{{ p.category_name or '-' }}</td>
-                    <td class="p-3">
-                        <a href="/admin/product/delete/{{ p.id }}" class="text-red-600 hover:underline" onclick="return confirm('Delete product?')">Delete</a>
+                    <td class="p-3 flex gap-2">
+                        <button onclick="openEditModal({{ p.id }}, '{{ p.name|escapejs }}', {{ p.price_ugx }}, '{{ p.category_id|default('') }}', '{{ p.description|escapejs }}', '{{ p.image_url|escapejs }}')" 
+                                class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Edit</button>
+                        <a href="/admin/product/delete/{{ p.id }}" class="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700" 
+                           onclick="return confirm('Delete this product?')">Delete</a>
                     </td>
                 </tr>
                 {% else %}
@@ -55,4 +61,53 @@
         </table>
     </div>
 </div>
+
+<!-- Edit Product Modal -->
+<div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        <div class="relative bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-bold">Edit Product</h3>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form id="editProductForm" method="post" enctype="multipart/form-data" class="mt-4 space-y-4">
+                <input type="text" name="name" placeholder="Product Name" required class="w-full border rounded p-2">
+                <input type="number" name="price_ugx" placeholder="Price (UGX)" required class="w-full border rounded p-2">
+                <select name="category_id" class="w-full border rounded p-2">
+                    <option value="">Select Category</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+                <textarea name="description" rows="3" placeholder="Description" class="w-full border rounded p-2"></textarea>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Current Image</label>
+                    <img id="currentImage" src="" class="h-20 w-auto object-contain mt-1">
+                </div>
+                <input type="file" name="image" accept="image/*" class="w-full border rounded p-2">
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Update Product</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openEditModal(id, name, price, categoryId, description, imageUrl) {
+        const form = document.getElementById('editProductForm');
+        form.action = '/admin/product/edit/' + id;
+        form.querySelector('input[name="name"]').value = name;
+        form.querySelector('input[name="price_ugx"]').value = price;
+        form.querySelector('select[name="category_id"]').value = categoryId;
+        form.querySelector('textarea[name="description"]').value = description;
+        const img = document.getElementById('currentImage');
+        img.src = imageUrl || 'https://placehold.co/100?text=No+Image';
+        document.getElementById('editModal').classList.remove('hidden');
+    }
+    function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+    }
+</script>
 {% endblock %}
