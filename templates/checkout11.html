@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Checkout - South Cart{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <h1 class="text-3xl font-bold mb-6">Checkout</h1>
+    <form method="post">
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-xl font-bold mb-4">Shipping Info</h2>
+                    <div class="mb-3"><label class="block text-sm font-medium mb-1">Full Name</label><input type="text" value="{{ user.name }}" readonly class="w-full border rounded-lg px-3 py-2 bg-gray-50"></div>
+                    <div class="mb-3"><label class="block text-sm font-medium mb-1">Email</label><input type="email" value="{{ user.email }}" readonly class="w-full border rounded-lg px-3 py-2 bg-gray-50"></div>
+                    <div class="mb-3"><label class="block text-sm font-medium mb-1">Phone</label><input type="text" name="phone" required value="{{ user.phone or '' }}" class="w-full border rounded-lg px-3 py-2"></div>
+                    <div class="mb-3"><label class="block text-sm font-medium mb-1">City</label><select name="city" required class="w-full border rounded-lg px-3 py-2"><option value="Juba">Juba</option><option value="Wau">Wau</option><option value="Malakal">Malakal</option><option value="Other">Other</option></select></div>
+                    <div class="mb-3"><label class="block text-sm font-medium mb-1">Address</label><textarea name="address" rows="2" required class="w-full border rounded-lg px-3 py-2">{{ user.address or '' }}</textarea></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-xl font-bold mb-4">Payment</h2>
+                    <div class="space-y-2"><label class="flex gap-2"><input type="radio" name="payment_method" value="MTN Mobile Money" required> MTN Mobile Money</label><label class="flex gap-2"><input type="radio" name="payment_method" value="Airtel Money"> Airtel Money</label><label class="flex gap-2"><input type="radio" name="payment_method" value="Bank Transfer"> Bank Transfer</label></div>
+                    <div class="mt-4 p-3 bg-yellow-50 rounded-lg text-sm">📌 After placing order, you will receive payment instructions. Send money to our number and we confirm manually.</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-6 h-fit">
+                <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+                <div class="space-y-2">
+                    {% for item in cart_items %}<div class="flex justify-between text-sm"><span>{{ item.name }} × {{ item.quantity }}</span><span data-price-ugx="{{ item.subtotal }}">UGX {{ item.subtotal }}</span></div>{% endfor %}
+                </div>
+                <div class="border-t mt-4 pt-4"><div class="flex justify-between"><span>Subtotal</span><span data-price-ugx="{{ total }}">UGX {{ total }}</span></div><div class="flex justify-between"><span>Delivery</span><span data-price-ugx="{{ delivery_fee }}">UGX {{ delivery_fee }}</span></div><div class="flex justify-between font-bold text-lg mt-2"><span>Total</span><span data-price-ugx="{{ total + delivery_fee }}">UGX {{ total + delivery_fee }}</span></div></div>
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg mt-4 font-semibold hover:bg-green-700">Place Order</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

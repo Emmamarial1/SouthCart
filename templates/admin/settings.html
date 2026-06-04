@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+{% block title %}Settings - South Cart Admin{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <h1 class="text-2xl font-bold">Settings</h1>
+
+    <!-- Admin Account Settings -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold mb-4">Admin Account</h2>
+        <form action="/admin/update-profile" method="post" class="space-y-4 max-w-md">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Admin Name</label>
+                <input type="text" name="admin_name" value="{{ session.user_name }}" required class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">New Password (leave blank to keep current)</label>
+                <input type="password" name="new_password" class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                <input type="password" name="confirm_password" class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Update Profile</button>
+        </form>
+    </div>
+
+    <!-- General Site Settings -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold mb-4">General Settings</h2>
+        <form action="/admin/settings" method="post" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Site Name</label>
+                <input type="text" name="site_name" value="{{ site_name }}" class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Delivery Fee (UGX)</label>
+                <input type="number" name="delivery_fee" value="{{ delivery_fee }}" class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">WhatsApp Number</label>
+                <input type="text" name="whatsapp_number" value="{{ whatsapp }}" class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Currency Rates (SSP per UGX)</label>
+                <input type="number" step="0.001" name="rate_ssp" value="{{ rates.SSP }}" class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Currency Rates (USD per UGX)</label>
+                <input type="number" step="0.00001" name="rate_usd" value="{{ rates.USD }}" class="mt-1 block w-full border rounded-md p-2">
+            </div>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Save Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

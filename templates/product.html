@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} - South Cart{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-6 max-w-6xl">
+    <div class="grid md:grid-cols-2 gap-6">
+        <!-- Product image - object-contain to avoid cropping -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden flex items-center justify-center p-4">
+            <img src="{{ product.image_url or 'https://placehold.co/600x500?text=Product' }}" 
+                 alt="{{ product.name }}" 
+                 class="w-full h-auto max-h-96 object-contain">
+        </div>
+        <!-- Product details - tighter spacing -->
+        <div class="space-y-3">
+            <h1 class="text-2xl font-bold">{{ product.name }}</h1>
+            <div class="flex items-center gap-2 text-sm">
+                <span class="text-yellow-500">★ {{ "%.1f"|format(product.rating) }}</span>
+                <span class="text-gray-500">({{ product.review_count }} reviews)</span>
+            </div>
+            <p class="text-2xl text-green-700 font-bold" data-price-ugx="{{ product.price_ugx }}">UGX {{ product.price_ugx }}</p>
+            <p class="text-gray-600 text-sm">{{ product.description or 'No description available.' }}</p>
+            <div class="border-t pt-3 text-sm">
+                <p><strong>Category:</strong> {{ product.category_name }}</p>
+            </div>
+            {% if not session.is_admin %}
+            <div class="flex gap-3 items-center pt-2">
+                <input type="number" id="qty-{{ product.id }}" value="1" min="1" class="w-20 border rounded-lg px-3 py-1.5 text-center">
+                <button onclick="addToCart({{ product.id }})" class="bg-green-600 text-white px-5 py-1.5 rounded-lg font-semibold hover:bg-green-700">Add to Cart</button>
+            </div>
+            {% endif %}
+            <div class="mt-3 p-3 bg-green-50 rounded-lg text-xs">
+                <p class="font-semibold">✅ Trusted delivery to South Sudan</p>
+                <p>We purchase in Uganda and deliver to your door.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews section (tightened) -->
+    <div class="mt-8">
+        <h2 class="text-xl font-bold mb-3">Customer Reviews</h2>
+        {% if session.user_id and not session.is_admin %}
+        <div class="bg-white rounded-xl shadow-sm p-4 mb-5">
+            <h3 class="font-semibold mb-2">Write a review</h3>
+            <form action="/submit-review" method="post">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <div class="flex gap-2 mb-2 text-sm">
+                    <label><input type="radio" name="rating" value="5" required> ★★★★★</label>
+                    <label><input type="radio" name="rating" value="4"> ★★★★</label>
+                    <label><input type="radio" name="rating" value="3"> ★★★</label>
+                    <label><input type="radio" name="rating" value="2"> ★★</label>
+                    <label><input type="radio" name="rating" value="1"> ★</label>
+                </div>
+                <textarea name="comment" rows="2" class="w-full border rounded-lg p-2 text-sm" placeholder="Share your experience..."></textarea>
+                <button type="submit" class="mt-2 bg-green-600 text-white px-3 py-1 rounded-lg text-sm">Submit Review</button>
+            </form>
+        </div>
+        {% elif not session.user_id %}
+        <p class="text-gray-500 text-sm mb-3"><a href="/login" class="text-green-600">Login</a> to write a review.</p>
+        {% endif %}
+
+        {% for review in reviews %}
+        <div class="border-b pb-3 mb-3">
+            <div class="flex items-center gap-2 text-sm"><span class="font-semibold">{{ review.user_name }}</span><span class="text-yellow-500">★ {{ review.rating }}</span><span class="text-gray-400 text-xs">{{ review.created_at }}</span></div>
+            <p class="mt-1 text-sm">{{ review.comment }}</p>
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-sm">No reviews yet. Be the first!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Related products -->
+    {% if related %}
+    <div class="mt-8">
+        <h2 class="text-xl font-bold mb-3">You may also like</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {% for p in related %}
+            <div class="bg-white rounded-lg shadow-sm p-2">
+                <a href="/product/{{ p.id }}">
+                    <img src="{{ p.image_url or 'https://placehold.co/150' }}" class="w-full h-24 object-cover rounded mb-1">
+                    <p class="font-semibold text-sm">{{ p.name }}</p>
+                    <p class="text-green-600 text-xs" data-price-ugx="{{ p.price_ugx }}">UGX {{ p.price_ugx }}</p>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

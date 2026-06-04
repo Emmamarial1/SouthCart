@@ -1,0 +1,146 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Dashboard</h1>
+            <p class="text-gray-500 text-sm">Welcome back, {{ session.user_name }}</p>
+        </div>
+        <div class="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg shadow-sm">
+            {{ now.strftime('%A, %d %B %Y') if now else 'Today' }}
+        </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-green-500 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div><p class="text-gray-500 text-sm">Total Orders</p><p class="text-2xl font-bold text-gray-800">{{ total_orders }}</p></div>
+                <i class="lucide-shopping-bag text-3xl text-green-500"></i>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-yellow-500 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div><p class="text-gray-500 text-sm">Pending Orders</p><p class="text-2xl font-bold text-gray-800">{{ pending_orders }}</p></div>
+                <i class="lucide-clock text-3xl text-yellow-500"></i>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-blue-500 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div><p class="text-gray-500 text-sm">Total Products</p><p class="text-2xl font-bold text-gray-800">{{ total_products }}</p></div>
+                <i class="lucide-package text-3xl text-blue-500"></i>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-purple-500 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div><p class="text-gray-500 text-sm">Customers</p><p class="text-2xl font-bold text-gray-800">{{ total_customers }}</p></div>
+                <i class="lucide-users text-3xl text-purple-500"></i>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-emerald-500 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div><p class="text-gray-500 text-sm">Revenue (UGX)</p><p class="text-2xl font-bold text-gray-800">{{ "{:,.0f}".format(total_revenue) }}</p></div>
+                <i class="lucide-trending-up text-3xl text-emerald-500"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two column layout: Quick Actions + Revenue Chart -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Quick Actions Card -->
+        <div class="bg-white rounded-xl shadow-sm p-5">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i class="lucide-zap"></i> Quick Actions</h2>
+            <div class="space-y-3">
+                <a href="/admin/products" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-green-50 transition group">
+                    <span class="font-medium">➕ Add New Product</span>
+                    <i class="lucide-arrow-right text-gray-400 group-hover:text-green-600"></i>
+                </a>
+                <a href="/admin/orders" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-green-50 transition group">
+                    <span class="font-medium">📦 View All Orders</span>
+                    <i class="lucide-arrow-right text-gray-400 group-hover:text-green-600"></i>
+                </a>
+                <a href="/admin/customers" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-green-50 transition group">
+                    <span class="font-medium">👥 Manage Customers</span>
+                    <i class="lucide-arrow-right text-gray-400 group-hover:text-green-600"></i>
+                </a>
+                <a href="/admin/settings" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-green-50 transition group">
+                    <span class="font-medium">⚙️ Website Settings</span>
+                    <i class="lucide-arrow-right text-gray-400 group-hover:text-green-600"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Real Weekly Revenue Chart -->
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-gray-800">Weekly Revenue Trend</h2>
+                <span class="text-xs text-gray-400">Last 7 days (paid orders)</span>
+            </div>
+            <div class="space-y-3">
+                {% for item in weekly_revenue %}
+                <div class="flex items-center gap-3">
+                    <div class="w-10 text-sm text-gray-500">{{ item.day }}</div>
+                    <div class="flex-1 bg-gray-100 rounded-full h-6 overflow-hidden">
+                        <div class="bg-green-500 h-full rounded-full" style="width: {{ (item.revenue / 500000 * 100) if item.revenue else 0 }}%"></div>
+                    </div>
+                    <div class="w-24 text-right text-sm font-medium text-gray-700">{{ "{:,.0f}".format(item.revenue) }} UGX</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mt-4 text-right text-xs text-gray-400">* Based on completed payments</div>
+        </div>
+    </div>
+
+    <!-- Recent Orders Table -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b flex justify-between items-center">
+            <h2 class="text-lg font-bold text-gray-800">Recent Orders</h2>
+            <a href="/admin/orders" class="text-sm text-green-600 hover:underline">View all →</a>
+        </div>
+        <div class="table-container">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order #</th>
+                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                        <th class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for order in recent_orders %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-5 py-3 text-sm font-mono">{{ order.order_number }}</td>
+                        <td class="px-5 py-3 text-sm">{{ order.customer_name or 'N/A' }}</td>
+                        <td class="px-5 py-3 text-sm font-medium">{{ "{:,.0f}".format(order.total_amount_ugx) }} UGX</td>
+                        <td class="px-5 py-3 text-sm">
+                            <span class="inline-flex px-2 py-1 rounded-full text-xs font-medium
+                                {% if order.order_status == 'delivered' %}bg-green-100 text-green-800
+                                {% elif order.order_status == 'pending' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                {{ order.order_status }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3 text-sm text-gray-500">{{ order.created_at[:10] }}</td>
+                        <td class="px-5 py-3 text-right">
+                            <a href="/admin/orders" class="text-green-600 hover:text-green-800 text-sm">Manage</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="px-5 py-8 text-center text-gray-400">No orders yet</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-green-50 rounded-xl p-4 text-center text-sm text-gray-600">
+        <i class="lucide-truck inline-block mr-1"></i> Active delivery partners: Bebeto Coaches, Friendship Bus
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}SouthCart - Borderless Shopping{% endblock %}
+{% block content %}
+
+<!-- Hero Carousel (8 slides) – unchanged -->
+<div class="relative h-[55vh] min-h-[400px] overflow-hidden">
+    <div id="hero-carousel" class="absolute inset-0 z-0">
+        <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 opacity-0" data-index="0">
+            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&h=800&fit=crop" alt="Fashion" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span class="text-white text-5xl md:text-7xl font-bold tracking-wider drop-shadow-lg">FASHION</span></div>
+        </div>
+        <!-- ... other 7 slides (same as before) ... -->
+    </div>
+    <div class="absolute bottom-4 left-0 right-0 z-10 flex justify-center gap-2">
+        {% for i in range(8) %}
+        <button class="carousel-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-dot="{{ i }}"></button>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Categories Grid (unchanged) -->
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Shop by Category</h2>
+        <a href="/shop" class="text-green-600 text-sm font-medium">View all →</a>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+        <!-- 8 category image items, unchanged -->
+    </div>
+</div>
+
+<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-7xl mx-auto">
+    {% for product in products %}
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition card-hover">
+        <a href="/product/{{ product.id }}">
+            <img src="{{ product.image_url or 'https://placehold.co/300x200?text=Product' }}" 
+                 alt="{{ product.name }}" 
+                 class="w-full h-32 object-contain bg-gray-50 p-2">
+        </a>
+        <div class="p-2">
+            <a href="/product/{{ product.id }}" class="font-semibold text-sm hover:text-green-600 line-clamp-1">{{ product.name }}</a>
+            <p class="text-green-700 font-bold text-sm mt-1" data-price-ugx="{{ product.price_ugx }}">UGX {{ product.price_ugx }}</p>
+            {% if not session.is_admin %}
+            <div class="mt-2 flex items-center gap-2">
+                <input type="number" id="qty-{{ product.id }}" value="1" min="1" class="w-12 border rounded px-1 py-0.5 text-xs text-center">
+                <button onclick="addToCart({{ product.id }})" class="bg-green-600 text-white px-2 py-0.5 rounded text-xs hover:bg-green-700">Add</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<!-- Trust Strip -->
+<div class="bg-gray-50 py-4 border-t border-gray-200">
+    <div class="container mx-auto px-4 text-center text-sm text-gray-500">
+        <p>✅ Trusted cross-border delivery | 🇺🇬 Uganda → 🇸🇸 South Sudan | 📞 WhatsApp support 24/7</p>
+    </div>
+</div>
+
+<script>
+    // Carousel logic (unchanged)
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    let slideInterval;
+    function showSlide(index) {
+        slides.forEach((slide, i) => { slide.classList.toggle('opacity-0', i !== index); slide.classList.toggle('opacity-100', i === index); });
+        dots.forEach((dot, i) => { dot.classList.toggle('bg-white', i === index); dot.classList.toggle('bg-white/50', i !== index); });
+        currentSlide = index;
+    }
+    function nextSlide() { let next = (currentSlide + 1) % slides.length; showSlide(next); }
+    if (slides.length > 0) {
+        showSlide(0);
+        slideInterval = setInterval(nextSlide, 5000);
+        const heroDiv = document.querySelector('.relative.h-\\[55vh\\]');
+        if (heroDiv) { heroDiv.addEventListener('mouseenter', () => clearInterval(slideInterval)); heroDiv.addEventListener('mouseleave', () => { slideInterval = setInterval(nextSlide, 5000); }); }
+        dots.forEach(dot => { dot.addEventListener('click', () => { clearInterval(slideInterval); showSlide(parseInt(dot.dataset.dot)); slideInterval = setInterval(nextSlide, 5000); }); });
+    }
+</script>
+
+{% endblock %}

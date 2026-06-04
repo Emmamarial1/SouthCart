@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Track Order - South Cart{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-12 max-w-2xl">
+    <h1 class="text-3xl font-bold text-center mb-6">Track Your Order</h1>
+    <form method="get" action="/track-order" class="mb-8">
+        <div class="flex gap-2"><input type="text" name="order_number" placeholder="e.g. SC-123456" required class="flex-1 border rounded-lg px-4 py-2 focus:ring-green-500"><button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg">Track</button></div>
+    </form>
+    {% if order %}
+    <div class="bg-white rounded-xl shadow-sm p-6">
+        <h2 class="text-xl font-bold mb-4">Order {{ order.order_number }}</h2>
+        <div class="space-y-3"><div class="flex justify-between"><span>Status</span><span class="font-semibold">{{ order.order_status }}</span></div><div class="flex justify-between"><span>Payment</span><span>{{ order.payment_status }}</span></div><div class="flex justify-between"><span>Total</span><span data-price-ugx="{{ order.total_amount_ugx }}">UGX {{ order.total_amount_ugx }}</span></div><div class="flex justify-between"><span>Address</span><span>{{ order.shipping_address }}, {{ order.city }}</span></div>{% if order.tracking_info %}<div><span>Tracking:</span> {{ order.tracking_info }}</div>{% endif %}</div>
+        <div class="mt-6 pt-4 border-t"><h3 class="font-semibold mb-2">Timeline</h3><ul class="space-y-2 text-sm"><li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-600"></span> Order placed: {{ order.created_at }}</li>{% if order.payment_status == 'paid' %}<li>✓ Payment confirmed</li>{% endif %}{% if order.order_status == 'purchased' %}<li>✓ Purchased in Uganda</li>{% endif %}{% if order.order_status == 'shipped' %}<li>✓ Shipped to South Sudan</li>{% endif %}{% if order.order_status == 'delivered' %}<li>✓ Delivered</li>{% endif %}</ul></div>
+        <div class="mt-6 p-3 bg-green-50 rounded-lg text-center"><p class="font-semibold">📞 Need help?</p><a href="https://wa.me/{{ whatsapp_number }}?text=Help%20with%20order%20{{ order.order_number }}" target="_blank" class="text-green-600 underline">Chat on WhatsApp</a></div>
+    </div>
+    {% elif request.args.get('order_number') %}
+    <div class="text-center text-red-600">Order not found. Please check the number.</div>
+    {% endif %}
+</div>
+{% endblock %}

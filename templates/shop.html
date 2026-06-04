@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Shop - South Cart{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <div class="flex justify-center">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-7xl">
+            {% for product in products %}
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition card-hover">
+                <a href="/product/{{ product.id }}">
+                    <img src="{{ product.image_url or 'https://placehold.co/300x200?text=No+Image' }}" 
+                         alt="{{ product.name }}" 
+                         class="w-full h-36 object-contain bg-gray-50 p-2">
+                </a>
+                <div class="p-3">
+                    <a href="/product/{{ product.id }}" class="font-semibold text-sm hover:text-green-600 line-clamp-2">{{ product.name }}</a>
+                    <p class="text-green-700 font-bold text-sm mt-1" data-price-ugx="{{ product.price_ugx }}">UGX {{ product.price_ugx }}</p>
+                    {% if not session.is_admin %}
+                    <div class="mt-2 flex items-center gap-2">
+                        <input type="number" id="qty-{{ product.id }}" value="1" min="1" class="w-12 border border-gray-300 rounded px-1 py-0.5 text-xs text-center">
+                        <button onclick="addToCart({{ product.id }})" class="bg-green-600 text-white px-2 py-0.5 rounded text-xs hover:bg-green-700">Add</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full text-center py-8 text-gray-500">No products found.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

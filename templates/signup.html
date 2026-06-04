@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Sign Up - South Cart{% endblock %}
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-8 bg-gradient-to-br from-green-50 to-white">
+    <div class="max-w-md w-full animate-fade-in-up">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition transform hover:scale-[1.01] duration-300">
+            <div class="h-2 bg-gradient-to-r from-green-600 to-green-400"></div>
+            <div class="p-6">
+                <div class="text-center mb-5">
+                    <div class="mx-auto w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-3 shadow-inner animate-pulse-slow">
+                        <i class="lucide-user-plus text-green-600" style="width: 26px; height: 26px;"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Create Account</h2>
+                    <p class="text-gray-500 text-xs mt-1">Join South Cart</p>
+                </div>
+
+                <form method="post" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" name="name" required 
+                               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition bg-gray-50 focus:bg-white"
+                               placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="tel" name="phone" required 
+                               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition bg-gray-50 focus:bg-white"
+                               placeholder="+211 912 345 678">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" name="password" required 
+                               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition bg-gray-50 focus:bg-white"
+                               placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input type="password" name="confirm_password" required 
+                               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition bg-gray-50 focus:bg-white"
+                               placeholder="••••••••">
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold py-2 rounded-xl transition shadow-md hover:shadow-lg text-sm">
+                        Sign Up
+                    </button>
+                </form>
+
+                <div class="mt-5 text-center">
+                    <p class="text-xs text-gray-600">
+                        Already have an account? 
+                        <a href="/login" class="text-green-600 font-semibold hover:underline ml-1">Login</a>
+                    </p>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-gray-100 text-center">
+                    <p class="text-[10px] text-gray-400">By signing up, you agree to our Terms & Privacy Policy.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    @keyframes pulseSlow {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(0.98); }
+    }
+    .animate-pulse-slow {
+        animation: pulseSlow 2s infinite;
+    }
+    input:focus {
+        transition: all 0.2s ease;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Delivery Information - South Cart{% endblock %}
+{% block content %}
+<div class="bg-gradient-to-b from-green-50 to-white py-12">
+    <div class="container mx-auto px-4 max-w-5xl">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Delivery Information</h1>
+            <p class="text-gray-500">Fast, reliable, and transparent cross‑border shipping</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Card: How We Deliver -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-center gap-3 mb-3">
+                    <i class="lucide-truck text-3xl text-green-600"></i>
+                    <h2 class="text-xl font-bold text-gray-800">How We Deliver</h2>
+                </div>
+                <p class="text-gray-600">South Cart transports products from Uganda to South Sudan using trusted bus and logistics companies including <strong>Bebeto Coaches</strong> and other partners.</p>
+            </div>
+
+            <!-- Card: Delivery Areas -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-center gap-3 mb-3">
+                    <i class="lucide-map-pin text-3xl text-green-600"></i>
+                    <h2 class="text-xl font-bold text-gray-800">Delivery Areas</h2>
+                </div>
+                <p class="text-gray-600"><strong>Juba City</strong> – home delivery and pickup station.</p>
+                <p class="text-gray-600 mt-1">Other states coming soon.</p>
+            </div>
+
+            <!-- Card: Delivery Options -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-center gap-3 mb-3">
+                    <i class="lucide-radio-tower text-3xl text-green-600"></i>
+                    <h2 class="text-xl font-bold text-gray-800">Delivery Options</h2>
+                </div>
+                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                    <li><strong>Home Delivery</strong> – to your doorstep</li>
+                    <li><strong>Pickup Station</strong> – collect from our Juba point</li>
+                    <li><strong>Agent Collection</strong> – via local agent</li>
+                </ul>
+            </div>
+
+            <!-- Card: Delivery Time -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-center gap-3 mb-3">
+                    <i class="lucide-clock text-3xl text-green-600"></i>
+                    <h2 class="text-xl font-bold text-gray-800">Delivery Time</h2>
+                </div>
+                <p class="text-gray-600"><strong class="text-green-700">1-2 days</strong> after payment confirmation.</p>
+                <p class="text-gray-500 text-sm mt-1">We prioritise speed and reliability.</p>
+            </div>
+
+            <!-- Card: Delivery Fee -->
+            <div class="md:col-span-2 bg-green-50 rounded-2xl shadow-md p-6 text-center">
+                <div class="flex justify-center mb-2">
+                    <i class="lucide-credit-card text-4xl text-green-600"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">Delivery Fee</h2>
+                <p class="text-gray-600 mt-1">Calculated at checkout based on your location and order weight. Standard fee within Juba is <strong>UGX 15,000</strong>.</p>
+            </div>
+        </div>
+
+        <!-- Trust & Support -->
+        <div class="mt-12 text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <i class="lucide-phone-call text-4xl text-green-600 mb-2"></i>
+            <p class="font-semibold text-gray-800">📞 Questions about delivery?</p>
+            <p class="text-gray-600 mt-1">WhatsApp us at <a href="https://wa.me/{{ whatsapp_number }}" class="text-green-600 font-semibold hover:underline">{{ whatsapp_number }}</a> or email <a href="mailto:support@southcart.com" class="text-green-600 hover:underline">support@southcart.com</a></p>
+        </div>
+
+        <div class="mt-8 text-center text-gray-400 text-sm">
+            <i class="lucide-map-pin inline mr-1"></i> Kampala, Uganda → Juba, South Sudan
+        </div>
+    </div>
+</div>
+{% endblock %}

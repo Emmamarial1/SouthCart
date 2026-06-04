@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}FAQ - South Cart{% endblock %}
+{% block content %}
+<div class="bg-gradient-to-b from-green-50 to-white py-12">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Frequently Asked Questions</h1>
+            <p class="text-gray-500">Everything you need to know about shopping with South Cart</p>
+        </div>
+
+        <div class="space-y-6">
+            <!-- FAQ Item 1 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold">Q</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">How do I place an order?</h2>
+                        <p class="text-gray-600 mt-1">Browse our shop, add items to cart, proceed to checkout, fill in your delivery details, and place your order. You will receive an order number and payment instructions via WhatsApp or SMS.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- FAQ Item 2 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold">Q</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">How do I pay?</h2>
+                        <p class="text-gray-600 mt-1">We accept MTN Mobile Money, Airtel Money, and bank transfer. After placing your order, you will receive our payment number. Send the exact amount with your order number as reference.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- FAQ Item 3 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold">Q</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">How long does delivery take?</h2>
+                        <p class="text-gray-600 mt-1"><strong class="text-green-700">1-2 days</strong> after we confirm your payment. You can track your order status online.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- FAQ Item 4 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold">Q</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">Is South Cart safe?</h2>
+                        <p class="text-gray-600 mt-1">Yes. We are a registered business. We only work with verified suppliers in Uganda and trusted transport partners. We provide order tracking and WhatsApp support.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- FAQ Item 5 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold">Q</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">What if my product arrives damaged?</h2>
+                        <p class="text-gray-600 mt-1">Contact us immediately via WhatsApp. We will investigate and resolve the issue.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- FAQ Item 6 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold">Q</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">Can I request a product not listed?</h2>
+                        <p class="text-gray-600 mt-1">Yes! Use our <a href="/request-product" class="text-green-600 hover:underline">Request Product form</a>. We will try to source it from Uganda.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- FAQ Item 7 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold">Q</div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">Do you deliver outside Juba?</h2>
+                        <p class="text-gray-600 mt-1">Currently we deliver only to Juba. We plan to expand to other states soon.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center">
+            <a href="/contact" class="inline-block bg-green-600 text-white px-8 py-3 rounded-full font-semibold shadow-md hover:bg-green-700 transition transform hover:scale-105">Still have questions? Contact Us →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

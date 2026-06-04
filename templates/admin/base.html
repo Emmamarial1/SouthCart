@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>South Cart Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/lucide-static@0.321.0/font/lucide.min.css" rel="stylesheet">
+    <style>
+        /* Sidebar transition for mobile */
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 280px;
+                background: linear-gradient(180deg, #065f46 0%, #047857 100%);
+                transform: translateX(-100%);
+                z-index: 50;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 70px;
+            }
+            .menu-btn {
+                display: block;
+            }
+        }
+        @media (min-width: 769px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 280px;
+                background: linear-gradient(180deg, #065f46 0%, #047857 100%);
+                box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+                z-index: 40;
+            }
+            .main-content {
+                margin-left: 280px;
+                padding: 1.5rem;
+            }
+            .menu-btn {
+                display: none;
+            }
+        }
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .sidebar a {
+            transition: all 0.2s;
+            border-radius: 0.5rem;
+        }
+        .sidebar a:hover {
+            background-color: rgba(255,255,255,0.15);
+            transform: translateX(4px);
+        }
+        .sidebar .active {
+            background-color: rgba(255,255,255,0.2);
+            border-left: 3px solid #fbbf24;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Mobile menu button -->
+    <button id="menu-btn" class="menu-btn fixed top-4 left-4 z-50 bg-white text-green-700 p-2 rounded-lg shadow-lg border border-gray-200">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <!-- Sidebar (green gradient) -->
+    <div id="sidebar" class="sidebar text-white">
+        <div class="flex flex-col h-full">
+            <!-- Logo / Brand -->
+            <div class="p-6 border-b border-white/20">
+                <h2 class="text-2xl font-bold tracking-tight">SouthCart</h2>
+                <p class="text-xs text-green-100 mt-1">Admin Panel</p>
+            </div>
+            <!-- Navigation links -->
+            <nav class="flex-1 py-6 px-4 space-y-1">
+                <a href="/admin" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg">
+                    <i class="lucide-layout-dashboard" style="width: 18px;"></i> Dashboard
+                </a>
+                <a href="/admin/products" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg">
+                    <i class="lucide-package" style="width: 18px;"></i> Products
+                </a>
+                <a href="/admin/orders" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg">
+                    <i class="lucide-shopping-bag" style="width: 18px;"></i> Orders
+                </a>
+                <a href="/admin/customers" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg">
+                    <i class="lucide-users" style="width: 18px;"></i> Customers
+                </a>
+                <a href="/admin/categories" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg">
+                    <i class="lucide-folder-tree" style="width: 18px;"></i> Categories
+                </a>
+                <a href="/admin/settings" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg">
+                    <i class="lucide-settings" style="width: 18px;"></i> Settings
+                </a>
+            </nav>
+            <!-- Footer links -->
+            <div class="p-4 border-t border-white/20 space-y-2">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg hover:bg-white/10">
+                    <i class="lucide-arrow-left" style="width: 18px;"></i> Back to Site
+                </a>
+                <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-red-200 hover:bg-red-800/50">
+                    <i class="lucide-log-out" style="width: 18px;"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        if (menuBtn && sidebar) {
+            menuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('open');
+            });
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Categories</h1>
+        <button onclick="document.getElementById('addCategoryModal').classList.remove('hidden')" class="bg-green-600 text-white px-4 py-2 rounded-lg">+ Add Category</button>
+    </div>
+    <div class="bg-white rounded-lg shadow">
+        <table class="min-w-full">
+            <thead class="bg-gray-100">
+                <tr><th class="px-4 py-2 text-left">Name</th><th class="px-4 py-2 text-left">Description</th><th class="px-4 py-2 text-left">Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for cat in categories %}
+                <tr class="border-t">
+                    <td class="px-4 py-2">{{ cat.name }}</td>
+                    <td class="px-4 py-2">{{ cat.description or '' }}</td>
+                    <td class="px-4 py-2"><a href="/admin/category/delete/{{ cat.id }}" onclick="return confirm('Delete category?')" class="text-red-600 hover:underline">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="addCategoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h2 class="text-xl font-bold mb-4">Add Category</h2>
+        <form method="post">
+            <div class="mb-3"><input type="text" name="name" placeholder="Category Name" required class="w-full border rounded px-3 py-2"></div>
+            <div class="mb-3"><textarea name="description" placeholder="Description" class="w-full border rounded px-3 py-2"></textarea></div>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="document.getElementById('addCategoryModal').classList.add('hidden')" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

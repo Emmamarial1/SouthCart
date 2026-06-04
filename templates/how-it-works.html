@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}How It Works - South Cart{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-12 max-w-5xl">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-3">How South Cart Works</h1>
+        <p class="text-gray-500 text-lg">Simple, transparent, and reliable cross-border shopping</p>
+    </div>
+
+    <!-- Steps grid -->
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- Step 1 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:-translate-y-1">
+            <div class="bg-green-50 p-6 text-center">
+                <div class="w-20 h-20 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto -mt-12 shadow-lg">1</div>
+                <div class="mt-6">
+                    <div class="text-green-600 text-4xl mb-3">
+                        <i class="lucide-shopping-cart"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Browse & Order</h2>
+                    <p class="text-gray-500 mt-2 text-sm">Explore our catalog, add items to cart, and place your order online.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:-translate-y-1">
+            <div class="bg-green-50 p-6 text-center">
+                <div class="w-20 h-20 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto -mt-12 shadow-lg">2</div>
+                <div class="mt-6">
+                    <div class="text-green-600 text-4xl mb-3">
+                        <i class="lucide-credit-card"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Make Payment</h2>
+                    <p class="text-gray-500 mt-2 text-sm">Pay via MTN Mobile Money, Airtel Money, or bank transfer. We confirm manually.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:-translate-y-1">
+            <div class="bg-green-50 p-6 text-center">
+                <div class="w-20 h-20 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto -mt-12 shadow-lg">3</div>
+                <div class="mt-6">
+                    <div class="text-green-600 text-4xl mb-3">
+                        <i class="lucide-package"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">We Purchase in Uganda</h2>
+                    <p class="text-gray-500 mt-2 text-sm">South Cart buys your products from trusted Ugandan suppliers.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:-translate-y-1">
+            <div class="bg-green-50 p-6 text-center">
+                <div class="w-20 h-20 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto -mt-12 shadow-lg">4</div>
+                <div class="mt-6">
+                    <div class="text-green-600 text-4xl mb-3">
+                        <i class="lucide-truck"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Delivery to South Sudan</h2>
+                    <p class="text-gray-500 mt-2 text-sm">We ship via trusted partners like Bebeto Coaches to Juba and other states.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:-translate-y-1">
+            <div class="bg-green-50 p-6 text-center">
+                <div class="w-20 h-20 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto -mt-12 shadow-lg">5</div>
+                <div class="mt-6">
+                    <div class="text-green-600 text-4xl mb-3">
+                        <i class="lucide-home"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Receive Your Order</h2>
+                    <p class="text-gray-500 mt-2 text-sm">Get your product at your doorstep or pickup station. Track online.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6 (Trust & Support) -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:-translate-y-1">
+            <div class="bg-green-50 p-6 text-center">
+                <div class="w-20 h-20 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto -mt-12 shadow-lg">✓</div>
+                <div class="mt-6">
+                    <div class="text-green-600 text-4xl mb-3">
+                        <i class="lucide-shield-check"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Trust & Support</h2>
+                    <p class="text-gray-500 mt-2 text-sm">24/7 WhatsApp support, anti‑scam guarantee, and order tracking.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Button -->
+    <div class="text-center mt-12">
+        <a href="/shop" class="inline-block bg-green-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-700 transition shadow-md">Start Shopping Now</a>
+    </div>
+</div>
+{% endblock %}

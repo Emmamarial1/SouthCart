@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Login - South Cart{% endblock %}
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-8 bg-gradient-to-br from-green-50 to-white">
+    <div class="max-w-md w-full animate-fade-in-up">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition transform hover:scale-[1.01] duration-300">
+            <div class="h-2 bg-gradient-to-r from-green-600 to-green-400"></div>
+            <div class="p-6">
+                <div class="text-center mb-5">
+                    <div class="mx-auto w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-3 shadow-inner animate-pulse-slow">
+                        <i class="lucide-user text-green-600" style="width: 26px; height: 26px;"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">Welcome Back</h2>
+                    <p class="text-gray-500 text-xs mt-1">Sign in with your name or phone</p>
+                </div>
+
+                <form method="post" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Name or Phone Number</label>
+                        <input type="text" name="login_credential" required 
+                               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 transition bg-gray-50 focus:bg-white"
+                               placeholder="e.g. John or +211 912 345 678">
+                    </div>
+                    <div class="relative">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" name="password" required 
+                               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-green-500 transition bg-gray-50 focus:bg-white pr-10"
+                               placeholder="••••••••">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-8 text-gray-400 hover:text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <label class="flex items-center gap-1">
+                            <input type="checkbox" class="rounded border-gray-300 text-green-600 focus:ring-0 w-3 h-3">
+                            <span class="text-gray-500">Remember me</span>
+                        </label>
+                        <a href="/forgot-password" class="text-green-600 hover:underline">Forgot password?</a>
+                    </div>
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white font-semibold py-2 rounded-xl transition shadow-md hover:shadow-lg text-sm">
+                        Login
+                    </button>
+                </form>
+
+                <div class="mt-5 text-center">
+                    <p class="text-xs text-gray-600">
+                        Don't have an account? 
+                        <a href="/signup" class="text-green-600 font-semibold hover:underline ml-1">Sign up</a>
+                    </p>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-gray-100 text-center">
+                    <p class="text-[10px] text-gray-400">Secure login • Protected by South Cart</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        });
+    }
+</script>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fadeInUp 0.5s ease-out; }
+    @keyframes pulseSlow {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(0.98); }
+    }
+    .animate-pulse-slow { animation: pulseSlow 2s infinite; }
+    input:focus {
+        transition: all 0.2s ease;
+        outline: none;
+    }
+</style>
+{% endblock %}
