@@ -643,8 +643,9 @@ def admin_update_profile():
 import os
 from flask import send_from_directory
 
-@app.route('/static/uploads/<filename>')
-def uploaded_file(filename):
+# Serve uploaded images directly (bypass static mapping)
+@app.route('/static/uploads/<path:filename>')
+def serve_uploaded_file(filename):
     return send_from_directory('static/uploads', filename)
 
 # ---------- Static pages ----------
