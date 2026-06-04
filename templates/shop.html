@@ -7,6 +7,7 @@
             {% for product in products %}
             <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition card-hover">
                 <a href="/product/{{ product.id }}">
+                    <p>DEBUG: {{ product.image_url }}</p>
                     <img src="{{ product.image_url or 'https://placehold.co/300x200?text=No+Image' }}" 
                          alt="{{ product.name }}" 
                          class="w-full h-36 object-contain bg-gray-50 p-2">
