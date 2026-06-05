@@ -601,8 +601,8 @@ def admin_categories():
 @app.route('/admin/category/edit/<int:id>', methods=['POST'])
 @admin_required
 def admin_edit_category(id):
-    name = request.form['name']
-    description = request.form.get('description', '')
+    name = request.form.get('name', '').strip()
+    description = request.form.get('description', '').strip()
     db = get_db()
     db.execute('UPDATE categories SET name = ?, description = ? WHERE id = ?', (name, description, id))
     db.commit()
