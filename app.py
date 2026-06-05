@@ -582,7 +582,8 @@ def admin_customers():
 def admin_categories():
     db = get_db()
     if request.method == 'POST':
-        db.execute('INSERT INTO categories (name, description) VALUES (?, ?)', (request.form['name'], request.form.get('description', '')))
+        db.execute('INSERT INTO categories (name, description) VALUES (?, ?)', 
+                   (request.form['name'], request.form.get('description', '')))
         db.commit()
         flash('Category added', 'success')
         return redirect(url_for('admin_categories'))
