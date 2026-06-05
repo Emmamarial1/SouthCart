@@ -589,13 +589,16 @@ def admin_categories():
     categories = db.execute('SELECT * FROM categories ORDER BY name').fetchall()
     return render_template('admin/categories.html', categories=categories, cart_count=get_cart_count())
 
-@app.route('/admin/category/delete/<int:id>')
+
+@app.route('/admin/category/edit/<int:id>', methods=['POST'])
 @admin_required
-def admin_delete_category(id):
+def admin_edit_category(id):
+    name = request.form['name']
+    description = request.form.get('description', '')
     db = get_db()
-    db.execute('DELETE FROM categories WHERE id = ?', (id,))
+    db.execute('UPDATE categories SET name = ?, description = ? WHERE id = ?', (name, description, id))
     db.commit()
-    flash('Category deleted', 'success')
+    flash('Category updated', 'success')
     return redirect(url_for('admin_categories'))
 
 @app.route('/admin/settings', methods=['GET', 'POST'])
