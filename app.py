@@ -5,7 +5,7 @@ import uuid
 import random
 from datetime import datetime, timedelta
 from functools import wraps
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, g
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, g, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_bcrypt import Bcrypt
 
@@ -105,7 +105,7 @@ def init_db():
         admin_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
         cursor.execute("INSERT OR IGNORE INTO users (name, phone, password, is_admin) VALUES ('Admin', 'admin', ?, 1)", (admin_password,))
         db.commit()
-        print("Database initialized (no email, forgot password ready)")
+        print("Database initialized (no email, categories ready)")
 
 init_db()
 
@@ -446,7 +446,6 @@ def forgot_password():
         credential = request.form.get('phone', '').strip()
         new_password = request.form.get('new_password', '')
         confirm = request.form.get('confirm_password', '')
-        print(f"[DEBUG] Forgot password attempt - credential: '{credential}'")
         if not credential or not new_password:
             flash('Please enter your name/phone and new password', 'danger')
             return redirect(url_for('forgot_password'))
@@ -454,19 +453,17 @@ def forgot_password():
             flash('Passwords do not match', 'danger')
             return redirect(url_for('forgot_password'))
         db = get_db()
-        # Search by name or phone
         user = db.execute('SELECT id, name, phone FROM users WHERE name = ? OR phone = ?', (credential, credential)).fetchone()
-        print(f"[DEBUG] User found: {user['name'] if user else None}")
         if not user:
             flash('No account found with that name or phone number', 'danger')
             return redirect(url_for('forgot_password'))
         hashed = bcrypt.generate_password_hash(new_password).decode('utf-8')
         db.execute('UPDATE users SET password = ? WHERE id = ?', (hashed, user['id']))
         db.commit()
-        print("[DEBUG] Password updated successfully")
         flash('Password reset successfully! Please login with your new password.', 'success')
         return redirect(url_for('login'))
     return render_template('forgot-password.html', cart_count=get_cart_count())
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -593,7 +590,7 @@ def admin_categories():
             flash(f'Category "{name}" added', 'success')
         except Exception as e:
             flash(f'Error: {str(e)}', 'danger')
-            print(f"DB error: {e}")  # This will appear in PythonAnywhere's server log
+            print(f"DB error: {e}")
         return redirect(url_for('admin_categories'))
     categories = db.execute('SELECT * FROM categories ORDER BY name').fetchall()
     return render_template('admin/categories.html', categories=categories, cart_count=get_cart_count())
@@ -651,9 +648,6 @@ def admin_update_profile():
     flash('Profile updated', 'success')
     return redirect(url_for('admin_settings'))
 
-import os
-from flask import send_from_directory
-
 # Serve uploaded images directly (bypass static mapping)
 @app.route('/static/uploads/<path:filename>')
 def serve_uploaded_file(filename):
@@ -675,12 +669,6 @@ def delivery():
 @app.route('/faq')
 def faq():
     return render_template('faq.html', cart_count=get_cart_count())
-
-# Serve uploaded images directly (bypass static mapping issues)
-@app.route('/static/uploads/<path:filename>')
-def serve_uploaded_file(filename):
-    from flask import send_from_directory
-    return send_from_directory('static/uploads', filename)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8088)
