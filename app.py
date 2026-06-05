@@ -582,14 +582,21 @@ def admin_customers():
 def admin_categories():
     db = get_db()
     if request.method == 'POST':
-        db.execute('INSERT INTO categories (name, description) VALUES (?, ?)', 
-                   (request.form['name'], request.form.get('description', '')))
-        db.commit()
-        flash('Category added', 'success')
+        name = request.form.get('name', '').strip()
+        description = request.form.get('description', '').strip()
+        if not name:
+            flash('Category name is required', 'danger')
+            return redirect(url_for('admin_categories'))
+        try:
+            db.execute('INSERT INTO categories (name, description) VALUES (?, ?)', (name, description))
+            db.commit()
+            flash(f'Category "{name}" added', 'success')
+        except Exception as e:
+            flash(f'Error: {str(e)}', 'danger')
+            print(f"DB error: {e}")  # This will appear in PythonAnywhere's server log
         return redirect(url_for('admin_categories'))
     categories = db.execute('SELECT * FROM categories ORDER BY name').fetchall()
     return render_template('admin/categories.html', categories=categories, cart_count=get_cart_count())
-
 
 @app.route('/admin/category/edit/<int:id>', methods=['POST'])
 @admin_required
