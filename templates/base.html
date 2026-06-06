@@ -56,9 +56,9 @@
 
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
         <div class="container mx-auto px-3 py-2 flex justify-between items-center gap-3">
-            <!-- Logo (image) -->
+            <!-- Logo - large image, no tagline -->
             <a href="/" class="flex-shrink-0">
-                <img src="/static/images/SouthCart-logo.png" alt="SouthCart" class="h-12 md:h-14 w-auto">
+                <img src="/static/images/SouthCart-logo.png" alt="SouthCart" class="h-14 md:h-16 w-auto">
             </a>
 
             <!-- Search bar (visible on all screens) -->
@@ -85,7 +85,7 @@
                         <button class="currency-option block w-full text-left px-4 py-2 hover:bg-green-50 text-sm" data-code="USD">💵 USD</button>
                     </div>
                 </div>
-                <!-- Cart (desktop) -->
+                <!-- Cart (desktop only) -->
                 {% if not session.is_admin %}
                 <a href="/cart" class="relative block">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -138,7 +138,7 @@
             </div>
         </div>
 
-        <!-- Mobile drawer -->
+        <!-- Mobile drawer (unchanged) -->
         <div id="mobile-drawer" class="fixed inset-0 z-50 bg-black/50 hidden md:hidden" style="backdrop-filter: blur(4px);">
             <div class="bg-white w-4/5 max-w-sm h-full shadow-xl flex flex-col">
                 <div class="flex justify-between items-center p-5 border-b">
@@ -172,7 +172,7 @@
             </div>
         </div>
 
-        <!-- Category row (desktop horizontal scroll, mobile dropdown) -->
+        <!-- Category row (unchanged) -->
         <div class="border-t border-gray-100 bg-white py-2">
             <div class="container mx-auto px-3">
                 <div class="hidden md:flex gap-4 text-sm whitespace-nowrap overflow-x-auto no-scrollbar pb-1">
@@ -197,8 +197,8 @@
         </div>
     </header>
 
-    <!-- Flash messages -->
-    <div class="container mx-auto px-3 mt-3">
+    <!-- Flash messages (will auto‑disappear after 3 seconds) -->
+    <div class="container mx-auto px-3 mt-3" id="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
                 <div class="p-3 rounded-xl mb-2 text-sm {% if category == 'success' %}bg-green-100 text-green-800 border-l-4 border-green-600{% elif category == 'danger' %}bg-red-100 text-red-800 border-l-4 border-red-600{% else %}bg-blue-100 text-blue-800 border-l-4 border-blue-600{% endif %}">
@@ -227,7 +227,7 @@
     </div>
     {% endif %}
 
-    <!-- Footer -->
+    <!-- Footer (unchanged) -->
     <footer class="bg-green-800 text-white mt-16">
         <div class="container mx-auto px-4 py-10">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -366,6 +366,16 @@
             })
             .catch(error => console.error('Error:', error));
         };
+
+        // Auto‑dismiss flash messages after 3 seconds
+        const flashMessages = document.querySelectorAll('.rounded-xl.mb-2.text-sm');
+        flashMessages.forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s';
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 500);
+            }, 3000);
+        });
 
         updateAllPrices();
         updateCartCount({{ cart_count | default(0) }});
