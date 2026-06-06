@@ -38,9 +38,8 @@ def init_db():
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-        # Drop old users table to remove email column (if exists)
-        cursor.execute("DROP TABLE IF EXISTS users")
-        cursor.execute('''CREATE TABLE users (
+        # Users table (preserve existing data, add missing columns)
+        cursor.execute('''CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             phone TEXT UNIQUE,
@@ -50,6 +49,13 @@ def init_db():
             is_admin INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )''')
+        # Add created_at column if missing (for old databases)
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP')
+        except sqlite3.OperationalError:
+            pass  # column already exists
+
+        # Other tables unchanged
         cursor.execute('''CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL, description TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -105,7 +111,7 @@ def init_db():
         admin_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
         cursor.execute("INSERT OR IGNORE INTO users (name, phone, password, is_admin) VALUES ('Admin', 'admin', ?, 1)", (admin_password,))
         db.commit()
-        print("Database initialized (no email, categories ready)")
+        print("Database initialized/updated (created_at column ensured)")
 
 init_db()
 
@@ -398,7 +404,6 @@ def login():
         db = get_db()
         user = db.execute('SELECT * FROM users WHERE name = ? OR phone = ?', (credential, credential)).fetchone()
         if user and bcrypt.check_password_hash(user['password'], password):
-            # Clear any existing session data to prevent session mixing
             session.clear()
             session['user_id'] = user['id']
             session['user_name'] = user['name']
@@ -416,7 +421,7 @@ def login():
             return redirect(request.args.get('next') or url_for('index'))
         flash('Invalid name/phone or password', 'danger')
     return render_template('login.html', cart_count=get_cart_count())
-    
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
