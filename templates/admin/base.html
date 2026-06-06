@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>South Cart Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/lucide-static@0.321.0/font/lucide.min.css" rel="stylesheet">
@@ -66,10 +66,6 @@
             background-color: rgba(255,255,255,0.15);
             transform: translateX(4px);
         }
-        .sidebar .active {
-            background-color: rgba(255,255,255,0.2);
-            border-left: 3px solid #fbbf24;
-        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -81,12 +77,10 @@
     <!-- Sidebar (green gradient) -->
     <div id="sidebar" class="sidebar text-white">
         <div class="flex flex-col h-full">
-            <!-- Logo / Brand -->
             <div class="p-6 border-b border-white/20">
                 <h2 class="text-2xl font-bold tracking-tight">SouthCart</h2>
                 <p class="text-xs text-green-100 mt-1">Admin Panel</p>
             </div>
-            <!-- Navigation links -->
             <nav class="flex-1 py-6 px-4 space-y-1">
                 <a href="/admin" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg">
                     <i class="lucide-layout-dashboard" style="width: 18px;"></i> Dashboard
@@ -107,7 +101,6 @@
                     <i class="lucide-settings" style="width: 18px;"></i> Settings
                 </a>
             </nav>
-            <!-- Footer links -->
             <div class="p-4 border-t border-white/20 space-y-2">
                 <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg hover:bg-white/10">
                     <i class="lucide-arrow-left" style="width: 18px;"></i> Back to Site
@@ -121,10 +114,20 @@
 
     <!-- Main content area -->
     <div class="main-content">
+        <!-- Flash messages (will auto‑disappear after 3 seconds) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="mb-4 p-3 rounded-lg text-sm {% if category == 'success' %}bg-green-100 text-green-800 border-l-4 border-green-600{% elif category == 'danger' %}bg-red-100 text-red-800 border-l-4 border-red-600{% else %}bg-blue-100 text-blue-800 border-l-4 border-blue-600{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </div>
 
     <script>
+        // Mobile drawer toggle
         const menuBtn = document.getElementById('menu-btn');
         const sidebar = document.getElementById('sidebar');
         if (menuBtn && sidebar) {
@@ -132,13 +135,22 @@
                 e.stopPropagation();
                 sidebar.classList.toggle('open');
             });
-            // Close sidebar when clicking outside on mobile
             document.addEventListener('click', (e) => {
                 if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
                     sidebar.classList.remove('open');
                 }
             });
         }
+
+        // Auto-dismiss flash messages after 3 seconds
+        const flashMessages = document.querySelectorAll('.bg-green-100, .bg-red-100, .bg-blue-100');
+        flashMessages.forEach(msg => {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s';
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 500);
+            }, 3000);
+        });
     </script>
 </body>
 </html>
