@@ -398,6 +398,8 @@ def login():
         db = get_db()
         user = db.execute('SELECT * FROM users WHERE name = ? OR phone = ?', (credential, credential)).fetchone()
         if user and bcrypt.check_password_hash(user['password'], password):
+            # Clear any existing session data to prevent session mixing
+            session.clear()
             session['user_id'] = user['id']
             session['user_name'] = user['name']
             session['is_admin'] = user['is_admin']
@@ -414,7 +416,7 @@ def login():
             return redirect(request.args.get('next') or url_for('index'))
         flash('Invalid name/phone or password', 'danger')
     return render_template('login.html', cart_count=get_cart_count())
-
+    
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
