@@ -35,10 +35,12 @@ def close_connection(exception):
         db.close()
 
 def init_db():
+    """Safe initialisation – never drops tables, only creates missing ones."""
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-        # Users table (preserve existing data, add missing columns)
+
+        # Users table
         cursor.execute('''CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -49,13 +51,17 @@ def init_db():
             is_admin INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )''')
-        # Add created_at column if missing (for old databases)
+        # Add missing columns for old databases (no data loss)
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN phone TEXT')
+        except sqlite3.OperationalError:
+            pass
         try:
             cursor.execute('ALTER TABLE users ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP')
         except sqlite3.OperationalError:
-            pass  # column already exists
+            pass
 
-        # Other tables unchanged
+        # Other tables
         cursor.execute('''CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL, description TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -103,15 +109,22 @@ def init_db():
         cursor.execute('''CREATE TABLE IF NOT EXISTS settings (
             key TEXT PRIMARY KEY, value TEXT
         )''')
+
+        # Default settings
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('currency_rates', '{\"UGX\":1,\"SSP\":0.026,\"USD\":0.00027}')")
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('site_name', 'South Cart')")
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('delivery_fee', '15000')")
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('whatsapp_number', '+256782713764')")
+
+        # Default categories (if not already present)
         cursor.execute("INSERT OR IGNORE INTO categories (id, name) VALUES (1, 'Fashion'), (2, 'Electronics'), (3, 'Shoes'), (4, 'Bags'), (5, 'Accessories'), (6, 'Watches'), (7, 'Beauty'), (8, 'Phones')")
+
+        # Default admin (only if no admin exists)
         admin_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
         cursor.execute("INSERT OR IGNORE INTO users (name, phone, password, is_admin) VALUES ('Admin', 'admin', ?, 1)", (admin_password,))
+
         db.commit()
-        print("Database initialized/updated (created_at column ensured)")
+        print("Database initialised/updated – no data lost")
 
 init_db()
 
@@ -655,7 +668,7 @@ def admin_update_profile():
     flash('Profile updated', 'success')
     return redirect(url_for('admin_settings'))
 
-# Serve uploaded images directly (bypass static mapping)
+# Serve uploaded images directly (only once)
 @app.route('/static/uploads/<path:filename>')
 def serve_uploaded_file(filename):
     return send_from_directory('static/uploads', filename)
