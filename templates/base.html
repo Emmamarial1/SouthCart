@@ -9,8 +9,6 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background: #f9fafb; }
         .card-hover:hover { transform: translateY(-4px); transition: all 0.2s ease; }
-        /* No bottom padding because we have no bottom navbar */
-        @media (max-width: 768px) { body { padding-bottom: 0; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .cart-badge {
@@ -30,6 +28,12 @@
             padding: 0 4px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
+        .rotate-180 { transform: rotate(180deg); transition: transform 0.2s; }
+        @media (max-width: 640px) {
+            .dropdown-menu { right: 0; left: auto; width: 160px; min-width: 140px; max-width: calc(100vw - 20px); }
+            #currency-menu, #user-dropdown { max-width: calc(100vw - 20px); right: 0; left: auto; }
+        }
+        .drawer-link { transition: all 0.2s; }
         /* Mobile drawer */
         .mobile-drawer {
             transition: transform 0.3s ease;
@@ -41,17 +45,11 @@
         .drawer-overlay {
             transition: opacity 0.3s ease;
         }
-        /* Better touch targets on mobile */
-        @media (max-width: 640px) {
-            button, a { touch-action: manipulation; }
-            .dropdown-menu { right: 0; left: auto; width: 160px; min-width: 140px; max-width: calc(100vw - 20px); }
-            #currency-menu, #user-dropdown { max-width: calc(100vw - 20px); right: 0; left: auto; }
-        }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-gray-50 text-gray-800">
-    <!-- Top bar (thin) -->
+    <!-- Top bar -->
     <div class="bg-green-800 text-white text-xs md:text-sm py-1.5">
         <div class="container mx-auto px-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -73,10 +71,10 @@
                 <img src="/static/images/SouthCart-logo.png" alt="SouthCart" class="h-10 md:h-12 w-auto">
             </a>
 
-            <!-- Search bar (visible on all screens) -->
+            <!-- Search bar -->
             <div class="flex-1 max-w-md mx-2">
                 <form action="/shop" method="get" class="relative">
-                    <input type="text" name="search" placeholder="Search..." 
+                    <input type="text" name="search" placeholder="Search products..." 
                            class="w-full border border-gray-200 rounded-full py-1.5 px-4 pl-9 text-sm focus:outline-none focus:border-green-500 transition">
                     <svg class="absolute left-3 top-2 text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </form>
@@ -97,7 +95,7 @@
                         <button class="currency-option block w-full text-left px-3 py-2 text-sm hover:bg-green-50" data-code="USD">💵 USD</button>
                     </div>
                 </div>
-                <!-- Cart icon (visible on all screens) -->
+                <!-- Cart icon -->
                 {% if not session.is_admin %}
                 <a href="/cart" class="relative block">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -129,7 +127,7 @@
             </div>
         </div>
 
-        <!-- Mobile inline currency selector (below search) -->
+        <!-- Mobile inline currency selector -->
         <div class="flex md:hidden justify-between items-center mt-1 px-3 pb-1">
             <div class="flex items-center gap-2">
                 <span class="text-xs text-gray-500">Currency:</span>
@@ -141,7 +139,7 @@
             </div>
         </div>
 
-        <!-- Mobile drawer (slide-out from right) -->
+        <!-- Mobile drawer -->
         <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-black/50 hidden z-40 md:hidden"></div>
         <div id="mobile-drawer" class="mobile-drawer fixed top-0 right-0 w-4/5 max-w-sm h-full bg-white shadow-xl z-50 flex flex-col">
             <div class="flex justify-between items-center p-4 border-b">
@@ -174,17 +172,15 @@
             </div>
         </div>
 
-        <!-- Category row: desktop horizontal scroll, mobile select dropdown -->
+        <!-- Category row -->
         <div class="border-t border-gray-100 bg-white py-2">
             <div class="container mx-auto px-3">
-                <!-- Desktop: horizontal scroll -->
                 <div class="hidden md:flex gap-4 text-sm whitespace-nowrap overflow-x-auto no-scrollbar pb-1">
                     <a href="/shop" class="font-medium text-green-700 hover:text-green-800 flex-shrink-0">🛍️ All Categories</a>
                     {% for cat in categories %}
                     <a href="/shop?category={{ cat.id }}" class="text-gray-600 hover:text-green-600 flex-shrink-0">{{ cat.name }}</a>
                     {% endfor %}
                 </div>
-                <!-- Mobile: native select -->
                 <div class="md:hidden">
                     <select id="mobile-cat-select" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-green-500">
                         <option value="/shop">🛍️ All Categories</option>
@@ -197,7 +193,7 @@
         </div>
     </header>
 
-    <!-- Flash messages (auto‑dismiss) -->
+    <!-- Flash messages -->
     <div class="container mx-auto px-3 mt-3" id="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
@@ -210,7 +206,7 @@
 
     {% block content %}{% endblock %}
 
-    <!-- Footer (desktop and mobile) -->
+    <!-- Footer -->
     <footer class="bg-green-800 text-white mt-12">
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -244,7 +240,7 @@
         const catSelect = document.getElementById('mobile-cat-select');
         if (catSelect) catSelect.addEventListener('change', function() { window.location.href = this.value; });
 
-        // Currency logic
+        // Currency
         const rates = {{ rates | tojson | default('{}') }};
         let currentCurrency = localStorage.getItem('currency') || 'UGX';
         function convertPrice(priceUGX) { let rate = rates[currentCurrency] || 1; return (priceUGX * rate).toFixed(currentCurrency === 'UGX' ? 0 : 2); }
@@ -265,7 +261,7 @@
         document.getElementById('user-menu')?.addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('user-dropdown')?.classList.toggle('hidden'); });
         window.addEventListener('click', () => { document.getElementById('user-dropdown')?.classList.add('hidden'); document.getElementById('currency-menu')?.classList.add('hidden'); });
 
-        // Cart count
+        // Cart
         function updateCartCount(count) { ['cart-count', 'drawer-cart-count'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = count; }); }
         window.addToCart = function(productId) {
             if ({{ 'true' if session.get('is_admin') else 'false' }}) return;
@@ -279,7 +275,7 @@
             .then(d => { if (d.success) { updateCartCount(d.cart_count); let btn = event?.target; if (btn) { let t = btn.innerText; btn.innerText = '✓ Added'; setTimeout(() => btn.innerText = t, 1500); } } });
         };
 
-        // Auto-dismiss flash messages
+        // Auto-dismiss flash
         setTimeout(() => { document.querySelectorAll('.rounded-xl.mb-2.text-sm').forEach(msg => { msg.style.transition = 'opacity 0.5s'; msg.style.opacity = '0'; setTimeout(() => msg.remove(), 500); }); }, 3000);
 
         updateAllPrices();
