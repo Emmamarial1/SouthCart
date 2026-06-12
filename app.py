@@ -3,6 +3,7 @@ import sqlite3
 import json
 import uuid
 import random
+import re
 from datetime import datetime, timedelta
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, g, send_from_directory
@@ -21,6 +22,13 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def normalise_phone(phone):
+    """Remove spaces, dashes, parentheses, keep digits and optional leading +."""
+    if not phone:
+        return ''
+    cleaned = re.sub(r'[^\d+]', '', phone.strip())
+    return cleaned
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -35,12 +43,9 @@ def close_connection(exception):
         db.close()
 
 def init_db():
-    """Safe initialisation – never drops tables, only adds missing columns."""
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-
-        # Users table
         cursor.execute('''CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -51,7 +56,6 @@ def init_db():
             is_admin INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )''')
-        # Add missing columns for existing databases (safe)
         for col, col_type in [
             ('phone', 'TEXT UNIQUE'),
             ('address', 'TEXT'),
@@ -64,7 +68,6 @@ def init_db():
             except sqlite3.OperationalError:
                 pass
 
-        # Other tables (create if not exist)
         cursor.execute('''CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL, description TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -113,27 +116,22 @@ def init_db():
             key TEXT PRIMARY KEY, value TEXT
         )''')
 
-        # Default settings
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('currency_rates', '{\"UGX\":1,\"SSP\":0.026,\"USD\":0.00027}')")
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('site_name', 'South Cart')")
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('delivery_fee', '15000')")
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('whatsapp_number', '+256782713764')")
 
-        # Default categories (only if not exist)
         cursor.execute("INSERT OR IGNORE INTO categories (id, name) VALUES (1, 'Fashion'), (2, 'Electronics'), (3, 'Shoes'), (4, 'Bags'), (5, 'Accessories'), (6, 'Watches'), (7, 'Beauty'), (8, 'Phones')")
 
-        # Default admin (only if not exist)
         admin_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
         cursor.execute("INSERT OR IGNORE INTO users (name, phone, password, is_admin) VALUES ('Admin', 'admin', ?, 1)", (admin_password,))
 
         db.commit()
-        # Log current user count to verify persistence
         user_count = cursor.execute('SELECT COUNT(*) FROM users').fetchone()[0]
         print(f"Database initialised. Existing users: {user_count}")
 
 init_db()
 
-# ---------- Helper: weekly revenue ----------
 def get_weekly_revenue():
     db = get_db()
     today = datetime.now().date()
@@ -411,7 +409,7 @@ def submit_review():
     flash('Review submitted (awaiting approval)', 'success')
     return redirect(url_for('product', id=request.form['product_id']))
 
-# ---------- Auth routes ----------
+# ---------- Auth routes with phone normalisation ----------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -421,7 +419,12 @@ def login():
             flash('Please enter both name/phone and password', 'danger')
             return redirect(url_for('login'))
         db = get_db()
-        user = db.execute('SELECT * FROM users WHERE name = ? OR phone = ?', (credential, credential)).fetchone()
+        normalised = normalise_phone(credential)
+        user = None
+        if normalised:
+            user = db.execute('SELECT * FROM users WHERE phone = ?', (normalised,)).fetchone()
+        if not user:
+            user = db.execute('SELECT * FROM users WHERE name = ?', (credential,)).fetchone()
         if user and bcrypt.check_password_hash(user['password'], password):
             session.clear()
             session['user_id'] = user['id']
@@ -436,14 +439,18 @@ def login():
 def signup():
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
-        phone = request.form.get('phone', '').strip()
+        phone_raw = request.form.get('phone', '').strip()
         password = request.form.get('password', '')
         confirm = request.form.get('confirm_password', '')
-        if not name or not phone or not password:
+        if not name or not phone_raw or not password:
             flash('Name, phone number and password are required', 'danger')
             return redirect(url_for('signup'))
         if password != confirm:
             flash('Passwords do not match', 'danger')
+            return redirect(url_for('signup'))
+        phone = normalise_phone(phone_raw)
+        if not phone:
+            flash('Invalid phone number', 'danger')
             return redirect(url_for('signup'))
         db = get_db()
         existing = db.execute('SELECT id FROM users WHERE phone = ?', (phone,)).fetchone()
@@ -470,7 +477,12 @@ def forgot_password():
             flash('Passwords do not match', 'danger')
             return redirect(url_for('forgot_password'))
         db = get_db()
-        user = db.execute('SELECT id, name, phone FROM users WHERE name = ? OR phone = ?', (credential, credential)).fetchone()
+        normalised = normalise_phone(credential)
+        user = None
+        if normalised:
+            user = db.execute('SELECT id, name, phone FROM users WHERE phone = ?', (normalised,)).fetchone()
+        if not user:
+            user = db.execute('SELECT id, name, phone FROM users WHERE name = ?', (credential,)).fetchone()
         if not user:
             flash('No account found with that name or phone number', 'danger')
             return redirect(url_for('forgot_password'))
