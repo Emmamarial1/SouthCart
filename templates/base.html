@@ -9,7 +9,7 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background: #f9fafb; }
         .card-hover:hover { transform: translateY(-4px); transition: all 0.2s ease; }
-        /* Remove bottom padding because we no longer have bottom navbar */
+        /* No bottom padding because we have no bottom navbar */
         @media (max-width: 768px) { body { padding-bottom: 0; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -30,13 +30,7 @@
             padding: 0 4px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        .rotate-180 { transform: rotate(180deg); transition: transform 0.2s; }
-        @media (max-width: 640px) {
-            .dropdown-menu { right: 0; left: auto; width: 160px; min-width: 140px; max-width: calc(100vw - 20px); }
-            #currency-menu, #user-dropdown { max-width: calc(100vw - 20px); right: 0; left: auto; }
-        }
-        .drawer-link { transition: all 0.2s; }
-        /* Mobile drawer styles */
+        /* Mobile drawer */
         .mobile-drawer {
             transition: transform 0.3s ease;
             transform: translateX(100%);
@@ -47,11 +41,17 @@
         .drawer-overlay {
             transition: opacity 0.3s ease;
         }
+        /* Better touch targets on mobile */
+        @media (max-width: 640px) {
+            button, a { touch-action: manipulation; }
+            .dropdown-menu { right: 0; left: auto; width: 160px; min-width: 140px; max-width: calc(100vw - 20px); }
+            #currency-menu, #user-dropdown { max-width: calc(100vw - 20px); right: 0; left: auto; }
+        }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-gray-50 text-gray-800">
-    <!-- Top bar -->
+    <!-- Top bar (thin) -->
     <div class="bg-green-800 text-white text-xs md:text-sm py-1.5">
         <div class="container mx-auto px-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -67,51 +67,55 @@
     </div>
 
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
-        <div class="container mx-auto px-3 py-2 flex justify-between items-center gap-3">
+        <div class="container mx-auto px-3 py-2 flex justify-between items-center gap-2">
             <!-- Logo -->
             <a href="/" class="flex-shrink-0">
-                <img src="/static/images/SouthCart-logo.png" alt="SouthCart" class="h-12 md:h-14 w-auto">
+                <img src="/static/images/SouthCart-logo.png" alt="SouthCart" class="h-10 md:h-12 w-auto">
             </a>
 
             <!-- Search bar (visible on all screens) -->
-            <div class="flex-1 max-w-md mx-2 md:mx-4">
+            <div class="flex-1 max-w-md mx-2">
                 <form action="/shop" method="get" class="relative">
-                    <input type="text" name="search" placeholder="Search products..." 
-                           class="w-full border border-gray-200 rounded-full py-2 px-4 pl-9 text-sm focus:outline-none focus:border-green-500 transition">
-                    <svg class="absolute left-3 top-2.5 text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" name="search" placeholder="Search..." 
+                           class="w-full border border-gray-200 rounded-full py-1.5 px-4 pl-9 text-sm focus:outline-none focus:border-green-500 transition">
+                    <svg class="absolute left-3 top-2 text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </form>
             </div>
 
-            <!-- Right icons (desktop) -->
-            <div class="hidden md:flex items-center gap-3">
-                <!-- Currency dropdown -->
-                <div class="relative" id="currency-dropdown">
-                    <button class="bg-gray-100 rounded-full px-3 py-1.5 flex items-center gap-1 text-sm font-medium">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <!-- Right icons: currency (desktop) + cart + hamburger -->
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Currency dropdown (desktop) -->
+                <div class="relative hidden md:block" id="currency-dropdown">
+                    <button class="bg-gray-100 rounded-full px-2 py-1 text-sm flex items-center gap-1">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                         <span id="currency-code">UGX</span>
-                        <svg class="transition-transform" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
-                    <div class="absolute right-0 mt-2 bg-white border rounded-lg shadow-lg hidden z-20 w-44 dropdown-menu" id="currency-menu">
-                        <button class="currency-option block w-full text-left px-4 py-2 hover:bg-green-50 text-sm" data-code="UGX">🇺🇬 UGX</button>
-                        <button class="currency-option block w-full text-left px-4 py-2 hover:bg-green-50 text-sm" data-code="SSP">🇸🇸 SSP</button>
-                        <button class="currency-option block w-full text-left px-4 py-2 hover:bg-green-50 text-sm" data-code="USD">💵 USD</button>
+                    <div class="absolute right-0 mt-2 bg-white border rounded-lg shadow-lg hidden z-20 w-36" id="currency-menu">
+                        <button class="currency-option block w-full text-left px-3 py-2 text-sm hover:bg-green-50" data-code="UGX">🇺🇬 UGX</button>
+                        <button class="currency-option block w-full text-left px-3 py-2 text-sm hover:bg-green-50" data-code="SSP">🇸🇸 SSP</button>
+                        <button class="currency-option block w-full text-left px-3 py-2 text-sm hover:bg-green-50" data-code="USD">💵 USD</button>
                     </div>
                 </div>
-                <!-- Cart (desktop only) -->
+                <!-- Cart icon (visible on all screens) -->
                 {% if not session.is_admin %}
                 <a href="/cart" class="relative block">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                     <span id="cart-count" class="cart-badge">{{ cart_count | default(0) }}</span>
                 </a>
                 {% endif %}
-                <!-- User menu -->
-                <div class="relative" id="user-menu">
+                <!-- Hamburger menu (mobile) -->
+                <button id="mobile-menu-btn" class="md:hidden p-1 rounded-lg hover:bg-gray-100">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <!-- User menu (desktop) -->
+                <div class="relative hidden md:block" id="user-menu">
                     <button class="flex items-center gap-1 text-sm">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         {{ session.user_name if session.user_id else 'Account' }}
-                        <svg class="transition-transform" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                     </button>
-                    <div class="absolute right-0 mt-2 bg-white border rounded-lg shadow-lg hidden w-36 z-20 dropdown-menu" id="user-dropdown">
+                    <div class="absolute right-0 mt-2 bg-white border rounded-lg shadow-lg hidden w-36 z-20" id="user-dropdown">
                         {% if session.user_id %}
                             {% if not session.is_admin %}<a href="/account" class="block px-4 py-2 text-sm hover:bg-gray-100">My Account</a>{% endif %}
                             {% if session.is_admin %}<a href="/admin" class="block px-4 py-2 text-sm hover:bg-gray-100">Admin Panel</a>{% endif %}
@@ -123,26 +127,13 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Mobile hamburger + cart icon -->
-            <div class="flex items-center gap-3 md:hidden">
-                {% if not session.is_admin %}
-                <a href="/cart" class="relative block">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                    <span id="mobile-cart-count" class="cart-badge" style="top: -6px; right: -8px;">{{ cart_count | default(0) }}</span>
-                </a>
-                {% endif %}
-                <button id="mobile-menu-btn" class="p-2 rounded-lg hover:bg-gray-100">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                </button>
-            </div>
         </div>
 
-        <!-- Currency selector for mobile (inline below search) -->
-        <div class="flex md:hidden justify-between items-center mt-2 px-3">
+        <!-- Mobile inline currency selector (below search) -->
+        <div class="flex md:hidden justify-between items-center mt-1 px-3 pb-1">
             <div class="flex items-center gap-2">
                 <span class="text-xs text-gray-500">Currency:</span>
-                <select id="mobile-currency" class="border rounded-lg px-2 py-1 text-xs bg-white">
+                <select id="mobile-currency" class="border rounded px-2 py-1 text-xs bg-white">
                     <option value="UGX">🇺🇬 UGX</option>
                     <option value="SSP">🇸🇸 SSP</option>
                     <option value="USD">💵 USD</option>
@@ -153,37 +144,37 @@
         <!-- Mobile drawer (slide-out from right) -->
         <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-black/50 hidden z-40 md:hidden"></div>
         <div id="mobile-drawer" class="mobile-drawer fixed top-0 right-0 w-4/5 max-w-sm h-full bg-white shadow-xl z-50 flex flex-col">
-            <div class="flex justify-between items-center p-5 border-b">
-                <span class="font-bold text-green-700 text-xl">Menu</span>
+            <div class="flex justify-between items-center p-4 border-b">
+                <span class="font-bold text-green-700 text-lg">Menu</span>
                 <button id="close-drawer-btn" class="p-2 rounded-full hover:bg-gray-100">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
             <div class="flex-1 overflow-y-auto p-4 space-y-3">
                 {% if not session.is_admin %}
-                <a href="/cart" class="flex items-center justify-between py-3 px-3 bg-gray-50 rounded-xl">
-                    <div class="flex items-center gap-3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="text-base">Cart</span></div>
-                    <span id="drawer-cart-count" class="bg-green-600 text-white rounded-full px-2 py-0.5 text-sm">{{ cart_count | default(0) }}</span>
+                <a href="/cart" class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span>Cart</span></div>
+                    <span id="drawer-cart-count" class="bg-green-600 text-white rounded-full px-2 text-xs">{{ cart_count | default(0) }}</span>
                 </a>
                 {% endif %}
-                <div class="border-t border-gray-100 my-2"></div>
+                <div class="border-t border-gray-100 my-1"></div>
                 {% if session.user_id %}
-                    {% if not session.is_admin %}<a href="/account" class="flex items-center gap-3 py-3 px-3 hover:bg-green-50 rounded-xl transition"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> My Account</a>{% endif %}
-                    {% if session.is_admin %}<a href="/admin" class="block py-3 px-3 hover:bg-green-50 rounded-xl">Admin Panel</a>{% endif %}
-                    <a href="/logout" class="block py-3 px-3 hover:bg-red-50 rounded-xl text-red-600">Logout</a>
+                    {% if not session.is_admin %}<a href="/account" class="flex items-center gap-3 py-2 px-3 hover:bg-green-50 rounded-lg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> My Account</a>{% endif %}
+                    {% if session.is_admin %}<a href="/admin" class="block py-2 px-3 hover:bg-green-50 rounded-lg">Admin Panel</a>{% endif %}
+                    <a href="/logout" class="block py-2 px-3 hover:bg-red-50 rounded-lg text-red-600">Logout</a>
                 {% else %}
-                    <a href="/login" class="block py-3 px-3 bg-green-50 rounded-xl text-green-700 font-semibold text-center">Login</a>
-                    <a href="/signup" class="block py-3 px-3 hover:bg-green-50 rounded-xl text-center">Sign Up</a>
+                    <a href="/login" class="block py-2 px-3 bg-green-50 rounded-lg text-green-700 font-semibold text-center">Login</a>
+                    <a href="/signup" class="block py-2 px-3 hover:bg-green-50 rounded-lg text-center">Sign Up</a>
                 {% endif %}
-                <div class="border-t border-gray-100 my-2"></div>
-                <a href="/shop" class="block py-3 px-3 hover:bg-green-50 rounded-xl">Shop</a>
-                <a href="/how-it-works" class="block py-3 px-3 hover:bg-green-50 rounded-xl">How It Works</a>
-                <a href="/delivery" class="block py-3 px-3 hover:bg-green-50 rounded-xl">Delivery</a>
-                <a href="/contact" class="block py-3 px-3 hover:bg-green-50 rounded-xl">Contact</a>
+                <div class="border-t border-gray-100 my-1"></div>
+                <a href="/shop" class="block py-2 px-3 hover:bg-green-50 rounded-lg">Shop</a>
+                <a href="/how-it-works" class="block py-2 px-3 hover:bg-green-50 rounded-lg">How It Works</a>
+                <a href="/delivery" class="block py-2 px-3 hover:bg-green-50 rounded-lg">Delivery</a>
+                <a href="/contact" class="block py-2 px-3 hover:bg-green-50 rounded-lg">Contact</a>
             </div>
         </div>
 
-        <!-- Category row (desktop horizontal scroll, mobile dropdown) -->
+        <!-- Category row: desktop horizontal scroll, mobile select dropdown -->
         <div class="border-t border-gray-100 bg-white py-2">
             <div class="container mx-auto px-3">
                 <!-- Desktop: horizontal scroll -->
@@ -193,9 +184,9 @@
                     <a href="/shop?category={{ cat.id }}" class="text-gray-600 hover:text-green-600 flex-shrink-0">{{ cat.name }}</a>
                     {% endfor %}
                 </div>
-                <!-- Mobile: simple select dropdown (no custom JS, works natively) -->
+                <!-- Mobile: native select -->
                 <div class="md:hidden">
-                    <select id="mobile-cat-select" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-white cursor-pointer focus:outline-none focus:border-green-500">
+                    <select id="mobile-cat-select" class="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:border-green-500">
                         <option value="/shop">🛍️ All Categories</option>
                         {% for cat in categories %}
                         <option value="/shop?category={{ cat.id }}">{{ cat.name }}</option>
@@ -206,11 +197,11 @@
         </div>
     </header>
 
-    <!-- Flash messages -->
+    <!-- Flash messages (auto‑dismiss) -->
     <div class="container mx-auto px-3 mt-3" id="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
-                <div class="p-3 rounded-xl mb-2 text-sm {% if category == 'success' %}bg-green-100 text-green-800 border-l-4 border-green-600{% elif category == 'danger' %}bg-red-100 text-red-800 border-l-4 border-red-600{% else %}bg-blue-100 text-blue-800 border-l-4 border-blue-600{% endif %}">
+                <div class="p-2 rounded-xl mb-2 text-sm {% if category == 'success' %}bg-green-100 text-green-800 border-l-4 border-green-600{% elif category == 'danger' %}bg-red-100 text-red-800 border-l-4 border-red-600{% else %}bg-blue-100 text-blue-800 border-l-4 border-blue-600{% endif %}">
                     {{ message }}
                 </div>
             {% endfor %}
@@ -219,98 +210,44 @@
 
     {% block content %}{% endblock %}
 
-    <!-- Footer (unchanged) -->
-    <footer class="bg-green-800 text-white mt-16">
-        <div class="container mx-auto px-4 py-10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                <div><h3 class="text-xl font-bold mb-3">SouthCart</h3><p class="text-green-100 text-sm">Borderless Shopping. Delivered to South Sudan.</p><p class="text-green-200 text-xs mt-2">Trusted cross-border e-commerce platform.</p></div>
-                <div><h4 class="font-semibold mb-3">Quick Links</h4><ul class="space-y-2 text-sm text-green-100"><li><a href="/shop" class="hover:text-white">Shop</a></li><li><a href="/how-it-works" class="hover:text-white">How It Works</a></li><li><a href="/delivery" class="hover:text-white">Delivery</a></li><li><a href="/faq" class="hover:text-white">FAQ</a></li></ul></div>
-                <div><h4 class="font-semibold mb-3">Support</h4><ul class="space-y-2 text-sm text-green-100"><li><a href="/contact" class="hover:text-white">Contact Us</a></li><li><a href="/track-order" class="hover:text-white">Track Order</a></li><li><a href="/request-product" class="hover:text-white">Request Product</a></li></ul></div>
-                <div><h4 class="font-semibold mb-3">Get in Touch</h4><div class="space-y-2 text-sm text-green-100"><p class="flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> WhatsApp: <a href="https://wa.me/{{ whatsapp_number | default('256782713764') }}" class="hover:text-white">{{ whatsapp_number | default('+256 782 713 764') }}</a></p><p class="flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email: <a href="mailto:support@southcart.com" class="hover:text-white">support@southcart.com</a></p><p class="flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Kampala, Uganda & Juba, South Sudan</p></div></div>
+    <!-- Footer (desktop and mobile) -->
+    <footer class="bg-green-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <div><h3 class="text-lg font-bold mb-2">SouthCart</h3><p class="text-green-100 text-sm">Borderless Shopping. Delivered to South Sudan.</p></div>
+                <div><h4 class="font-semibold mb-2">Quick Links</h4><ul class="space-y-1 text-sm text-green-100"><li><a href="/shop" class="hover:text-white">Shop</a></li><li><a href="/how-it-works" class="hover:text-white">How It Works</a></li><li><a href="/delivery" class="hover:text-white">Delivery</a></li><li><a href="/faq" class="hover:text-white">FAQ</a></li></ul></div>
+                <div><h4 class="font-semibold mb-2">Support</h4><ul class="space-y-1 text-sm text-green-100"><li><a href="/contact" class="hover:text-white">Contact Us</a></li><li><a href="/track-order" class="hover:text-white">Track Order</a></li><li><a href="/request-product" class="hover:text-white">Request Product</a></li></ul></div>
+                <div><h4 class="font-semibold mb-2">Contact</h4><div class="space-y-1 text-sm text-green-100"><p><svg class="inline mr-1 w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> WhatsApp: <a href="https://wa.me/{{ whatsapp_number | default('256782713764') }}" class="hover:text-white">{{ whatsapp_number | default('+256 782 713 764') }}</a></p><p><svg class="inline mr-1 w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> support@southcart.com</p><p><svg class="inline mr-1 w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Kampala, Uganda & Juba, South Sudan</p></div></div>
             </div>
-            <div class="border-t border-green-700 mt-8 pt-6 text-center text-green-200 text-xs">&copy; 2025 SouthCart. All rights reserved. | Borderless Shopping, Trusted Delivery.</div>
+            <div class="border-t border-green-700 mt-6 pt-4 text-center text-green-200 text-xs">&copy; 2025 SouthCart. All rights reserved.</div>
         </div>
     </footer>
 
     <!-- Floating WhatsApp -->
-    <a href="https://wa.me/{{ whatsapp_number | default('256782713764') }}?text=Hello%2C%20I%20need%20help%20with%20my%20order%20on%20South%20Cart" target="_blank" class="fixed bottom-6 right-6 bg-green-600 text-white rounded-full p-3 shadow-lg hover:bg-green-700 transition z-50 flex items-center justify-center" style="width: 56px; height: 56px;">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9 11h0"/><path d="M12 11h0"/><path d="M15 11h0"/></svg>
+    <a href="https://wa.me/{{ whatsapp_number | default('256782713764') }}?text=Hello%2C%20I%20need%20help%20with%20my%20order%20on%20South%20Cart" target="_blank" class="fixed bottom-4 right-4 bg-green-600 text-white rounded-full p-2 shadow-lg hover:bg-green-700 transition z-50 flex items-center justify-center" style="width: 48px; height: 48px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M9 11h0"/><path d="M12 11h0"/><path d="M15 11h0"/></svg>
     </a>
 
     <script>
-        // Mobile drawer toggling (improved)
+        // Mobile drawer
         const hamburger = document.getElementById('mobile-menu-btn');
         const drawer = document.getElementById('mobile-drawer');
         const overlay = document.getElementById('drawer-overlay');
         const closeDrawerBtn = document.getElementById('close-drawer-btn');
-        function openDrawer() {
-            drawer.classList.add('open');
-            overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeDrawer() {
-            drawer.classList.remove('open');
-            overlay.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
+        function openDrawer() { drawer.classList.add('open'); overlay.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeDrawer() { drawer.classList.remove('open'); overlay.classList.add('hidden'); document.body.style.overflow = ''; }
         if (hamburger) hamburger.addEventListener('click', openDrawer);
         if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
         if (overlay) overlay.addEventListener('click', closeDrawer);
 
         // Mobile category select
         const catSelect = document.getElementById('mobile-cat-select');
-        if (catSelect) {
-            catSelect.addEventListener('change', function() {
-                window.location.href = this.value;
-            });
-        }
+        if (catSelect) catSelect.addEventListener('change', function() { window.location.href = this.value; });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Currency dropdown desktop
-            const currencyBtn = document.querySelector('#currency-dropdown > button');
-            const currencyMenu = document.getElementById('currency-menu');
-            if (currencyBtn && currencyMenu) {
-                currencyBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    currencyMenu.classList.toggle('hidden');
-                });
-            }
-            document.querySelectorAll('.currency-option').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    setCurrency(this.dataset.code);
-                    currencyMenu?.classList.add('hidden');
-                });
-            });
-            const mobileCurrency = document.getElementById('mobile-currency');
-            if (mobileCurrency) {
-                mobileCurrency.addEventListener('change', function(e) {
-                    setCurrency(e.target.value);
-                });
-            }
-            // User dropdown desktop
-            const userBtn = document.getElementById('user-menu');
-            const userDropdown = document.getElementById('user-dropdown');
-            if (userBtn && userDropdown) {
-                userBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    userDropdown.classList.toggle('hidden');
-                });
-            }
-            // Close all when clicking outside
-            window.addEventListener('click', (event) => {
-                userDropdown?.classList.add('hidden');
-                currencyMenu?.classList.add('hidden');
-            });
-        });
-
+        // Currency logic
         const rates = {{ rates | tojson | default('{}') }};
         let currentCurrency = localStorage.getItem('currency') || 'UGX';
-
-        function convertPrice(priceUGX) {
-            let rate = rates[currentCurrency] || 1;
-            return (priceUGX * rate).toFixed(currentCurrency === 'UGX' ? 0 : 2);
-        }
-
+        function convertPrice(priceUGX) { let rate = rates[currentCurrency] || 1; return (priceUGX * rate).toFixed(currentCurrency === 'UGX' ? 0 : 2); }
         function updateAllPrices() {
             document.querySelectorAll('[data-price-ugx]').forEach(el => {
                 let priceUGX = parseFloat(el.dataset.priceUgx);
@@ -318,58 +255,32 @@
                 let symbol = currentCurrency === 'UGX' ? 'UGX' : (currentCurrency === 'SSP' ? 'SSP' : '$');
                 el.innerText = `${symbol} ${converted}`;
             });
-            const codeSpan = document.getElementById('currency-code');
-            if (codeSpan) codeSpan.innerText = currentCurrency;
-            const mobileSelect = document.getElementById('mobile-currency');
-            if (mobileSelect) mobileSelect.value = currentCurrency;
+            document.getElementById('currency-code') && (document.getElementById('currency-code').innerText = currentCurrency);
+            document.getElementById('mobile-currency') && (document.getElementById('mobile-currency').value = currentCurrency);
         }
+        function setCurrency(code) { currentCurrency = code; localStorage.setItem('currency', currentCurrency); updateAllPrices(); }
+        document.querySelectorAll('.currency-option').forEach(btn => btn.addEventListener('click', () => { setCurrency(btn.dataset.code); document.getElementById('currency-menu')?.classList.add('hidden'); }));
+        document.getElementById('mobile-currency')?.addEventListener('change', (e) => setCurrency(e.target.value));
+        document.getElementById('currency-dropdown')?.addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('currency-menu')?.classList.toggle('hidden'); });
+        document.getElementById('user-menu')?.addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('user-dropdown')?.classList.toggle('hidden'); });
+        window.addEventListener('click', () => { document.getElementById('user-dropdown')?.classList.add('hidden'); document.getElementById('currency-menu')?.classList.add('hidden'); });
 
-        function updateCartCount(count) {
-            const ids = ['cart-count', 'mobile-cart-count', 'drawer-cart-count'];
-            ids.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = count; });
-        }
-
-        function setCurrency(code) {
-            currentCurrency = code;
-            localStorage.setItem('currency', currentCurrency);
-            updateAllPrices();
-        }
-
-        const isAdmin = {{ 'true' if session.get('is_admin') else 'false' }};
-
+        // Cart count
+        function updateCartCount(count) { ['cart-count', 'drawer-cart-count'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = count; }); }
         window.addToCart = function(productId) {
-            if (isAdmin) return;
-            let quantityInput = document.getElementById('qty-' + productId);
-            let quantity = quantityInput ? quantityInput.value : 1;
+            if ({{ 'true' if session.get('is_admin') else 'false' }}) return;
+            let qty = document.getElementById('qty-' + productId)?.value || 1;
             fetch('/add-to-cart/' + productId, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
-                body: 'quantity=' + encodeURIComponent(quantity)
+                body: 'quantity=' + encodeURIComponent(qty)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updateCartCount(data.cart_count);
-                    let btn = event ? event.target : document.querySelector(`button[onclick*="addToCart(${productId})"]`);
-                    if (btn) {
-                        let originalText = btn.innerText;
-                        btn.innerText = '✓ Added';
-                        setTimeout(() => { btn.innerText = originalText; }, 1500);
-                    }
-                }
-            })
-            .catch(error => console.error('Error:', error));
+            .then(r => r.json())
+            .then(d => { if (d.success) { updateCartCount(d.cart_count); let btn = event?.target; if (btn) { let t = btn.innerText; btn.innerText = '✓ Added'; setTimeout(() => btn.innerText = t, 1500); } } });
         };
 
-        // Auto-dismiss flash messages after 3 seconds
-        const flashMessages = document.querySelectorAll('.rounded-xl.mb-2.text-sm');
-        flashMessages.forEach(msg => {
-            setTimeout(() => {
-                msg.style.transition = 'opacity 0.5s';
-                msg.style.opacity = '0';
-                setTimeout(() => msg.remove(), 500);
-            }, 3000);
-        });
+        // Auto-dismiss flash messages
+        setTimeout(() => { document.querySelectorAll('.rounded-xl.mb-2.text-sm').forEach(msg => { msg.style.transition = 'opacity 0.5s'; msg.style.opacity = '0'; setTimeout(() => msg.remove(), 500); }); }, 3000);
 
         updateAllPrices();
         updateCartCount({{ cart_count | default(0) }});
