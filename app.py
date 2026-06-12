@@ -51,7 +51,7 @@ def init_db():
             is_admin INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )''')
-        # Add missing columns for existing databases
+        # Add missing columns for existing databases (safe)
         for col, col_type in [
             ('phone', 'TEXT UNIQUE'),
             ('address', 'TEXT'),
@@ -64,7 +64,7 @@ def init_db():
             except sqlite3.OperationalError:
                 pass
 
-        # Other tables
+        # Other tables (create if not exist)
         cursor.execute('''CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL, description TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -119,15 +119,17 @@ def init_db():
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('delivery_fee', '15000')")
         cursor.execute("INSERT OR IGNORE INTO settings (key, value) VALUES ('whatsapp_number', '+256782713764')")
 
-        # Default categories
+        # Default categories (only if not exist)
         cursor.execute("INSERT OR IGNORE INTO categories (id, name) VALUES (1, 'Fashion'), (2, 'Electronics'), (3, 'Shoes'), (4, 'Bags'), (5, 'Accessories'), (6, 'Watches'), (7, 'Beauty'), (8, 'Phones')")
 
-        # Default admin
+        # Default admin (only if not exist)
         admin_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
         cursor.execute("INSERT OR IGNORE INTO users (name, phone, password, is_admin) VALUES ('Admin', 'admin', ?, 1)", (admin_password,))
 
         db.commit()
-        print("Database initialised/updated – no data loss")
+        # Log current user count to verify persistence
+        user_count = cursor.execute('SELECT COUNT(*) FROM users').fetchone()[0]
+        print(f"Database initialised. Existing users: {user_count}")
 
 init_db()
 
