@@ -171,7 +171,7 @@
             </div>
         </div>
 
-        <!-- Category row: desktop horizontal scroll, mobile full-width select -->
+        <!-- Category row: desktop horizontal scroll, mobile prominent select -->
         <div class="border-t border-gray-100 bg-white py-2">
             <div class="container mx-auto px-3">
                 <!-- Desktop: horizontal scroll -->
@@ -181,9 +181,9 @@
                     <a href="/shop?category={{ cat.id }}" class="text-gray-600 hover:text-green-600 flex-shrink-0">{{ cat.name }}</a>
                     {% endfor %}
                 </div>
-                <!-- Mobile: full-width select dropdown (prominent) -->
+                <!-- Mobile: larger, taller select dropdown -->
                 <div class="md:hidden">
-                    <select id="mobile-cat-select" class="w-full py-2 px-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-green-500 shadow-sm">
+                    <select id="mobile-cat-select" class="w-full py-3 px-4 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-green-500 shadow-md">
                         <option value="/shop">🛍️ All Categories</option>
                         {% for cat in categories %}
                         <option value="/shop?category={{ cat.id }}">{{ cat.name }}</option>
