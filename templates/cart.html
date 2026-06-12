@@ -43,7 +43,7 @@
             <div class="border-t pt-2 mt-2 flex justify-between font-bold text-lg"><span>Total</span><span data-price-ugx="{{ total + delivery_fee }}">UGX {{ total + delivery_fee }}</span></div>
 
             <!-- Delivery & payment form (replaces separate checkout) -->
-            <form method="post" action="/place-order" class="mt-6 space-y-3">
+            <form method="post" action="/place-order" id="orderForm" class="mt-6 space-y-3">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                     <input type="text" name="name" value="{{ session.user_name }}" required class="w-full border rounded-lg px-3 py-2 bg-gray-50">
@@ -73,7 +73,7 @@
                         <option value="Bank Transfer">Bank Transfer</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">Place Order</button>
+                <button type="submit" id="placeOrderBtn" class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">Place Order</button>
             </form>
             <a href="/shop" class="block w-full text-center border border-green-600 text-green-600 py-2 rounded-lg mt-3 hover:bg-green-50">Continue Shopping</a>
         </div>
@@ -86,4 +86,21 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+    // Prevent double submission of the order form
+    const orderForm = document.getElementById('orderForm');
+    const orderBtn = document.getElementById('placeOrderBtn');
+    if (orderForm && orderBtn) {
+        orderForm.addEventListener('submit', function(e) {
+            if (orderBtn.disabled) {
+                e.preventDefault();
+                return;
+            }
+            orderBtn.disabled = true;
+            orderBtn.innerText = 'Processing...';
+            // The form will submit; if it fails (network error), we could re-enable but that's rare.
+        });
+    }
+</script>
 {% endblock %}
